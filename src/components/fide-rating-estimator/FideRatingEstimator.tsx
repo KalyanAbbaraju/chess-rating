@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, KeyboardEvent, useEffect } from 'react';
-import { Facebook, Twitter, Share2, Calculator, Link as LinkIcon, Plus, Trash2 } from 'lucide-react';
+import { Facebook, Twitter, Calculator, Link as LinkIcon, Plus, Trash2 } from 'lucide-react';
 
 interface ResultsState {
   show: boolean;
@@ -27,6 +27,8 @@ const FideRatingEstimator: React.FC = () => {
   });
   const [copySuccess, setCopySuccess] = useState<string>('');
   const [activeTab, setActiveTab] = useState<string>("calculator");
+  const [age, setAge] = useState<string>('');
+  const [priorGames, setPriorGames] = useState<string>('');
   
   // Refs for keyboard navigation
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -150,6 +152,20 @@ const FideRatingEstimator: React.FC = () => {
   
   // FIDE K-factor determination
   const determineKFactor = (currentRating: number): number => {
+    const playerAge = parseInt(age);
+    const totalGames = parseInt(priorGames);
+    
+    // Rule 1: New players (less than 30 games)
+    if (!isNaN(totalGames) && totalGames < 30) {
+      return 40;
+    }
+    
+    // Rule 2: Players under 18 with rating under 2300
+    if (!isNaN(playerAge) && playerAge < 18 && currentRating < 2300) {
+      return 40;
+    }
+    
+    // Rule 3 & 4: Based on rating
     if (currentRating < 2400) {
       return 20; // Standard K-factor for players below 2400
     } else {
@@ -352,6 +368,44 @@ const FideRatingEstimator: React.FC = () => {
                 </div>
               </div>
 
+              <div className="flex space-x-4">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Age (for players under 18)
+                  </label>
+                  <input
+                    type="text"
+                    value={age}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '' || (/^\d+$/.test(val) && parseInt(val) >= 0 && parseInt(val) <= 120)) {
+                        setAge(val);
+                      }
+                    }}
+                    placeholder="Optional"
+                    className="block w-full px-2 py-1 border-0 border-b-2 border-gray-300 focus:border-b-2 focus:border-blue-500 focus:outline-none focus:ring-0 text-sm"
+                  />
+                </div>
+
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Prior Rated Games
+                  </label>
+                  <input
+                    type="text"
+                    value={priorGames}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '' || (/^\d+$/.test(val) && parseInt(val) >= 0)) {
+                        setPriorGames(val);
+                      }
+                    }}
+                    placeholder="Optional"
+                    className="block w-full px-2 py-1 border-0 border-b-2 border-gray-300 focus:border-b-2 focus:border-blue-500 focus:outline-none focus:ring-0 text-sm"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   FIDE ID (optional)
@@ -523,26 +577,26 @@ const FideRatingEstimator: React.FC = () => {
         )}
         
         {activeTab === "information" && (
-          <div className="text-sm space-y-4 h-[350px] overflow-auto pr-4">
+          <div className="text-sm space-y-4 h-[400px] overflow-auto pr-4">
             <div>
               <h3 className="font-semibold text-base mb-1">FIDE Rating System</h3>
               <p className="mb-2">
-                The FIDE (International Chess Federation) rating system is a mathematical method for evaluating a player's strength based on their performance against other rated players.
+                The FIDE (International Chess Federation) rating system is a mathematical method for evaluating a player&apos;s strength based on their performance against other rated players.
               </p>
               
               <div className="pl-4 space-y-3">
                 <div>
                   <h4 className="font-medium">Performance Rating</h4>
                   <p className="text-xs text-gray-700 mb-1">
-                    The performance rating represents how well you played in a specific event, based on your results and your opponents' ratings.
+                    The performance rating represents how well you played in a specific event, based on your results and your opponents&apos; ratings.
                   </p>
                   <div className="bg-base-200 p-2 rounded border text-xs">
                     <p>FIDE uses a table-based approach for mapping percentage scores to rating differences.</p>
                     <p className="mt-1">For example:</p>
                     <ul className="list-disc pl-4 mt-1">
                       <li>50% score = same rating as average of opponents</li>
-                      <li>70% score = approximately 150 points higher than opponents' average</li>
-                      <li>90% score = approximately 366 points higher than opponents' average</li>
+                      <li>70% score = approximately 150 points higher than opponents&apos; average</li>
+                      <li>90% score = approximately 366 points higher than opponents&apos; average</li>
                       <li>100% score = 800 points higher than average of opponents</li>
                     </ul>
                   </div>
@@ -555,7 +609,7 @@ const FideRatingEstimator: React.FC = () => {
                   </p>
                   <div className="bg-base-200 p-2 rounded border text-xs">
                     <p><strong>Formula:</strong> E = 1 / (1 + 10<sup>(R<sub>o</sub>-R<sub>p</sub>)/400</sup>)</p>
-                    <p>Where E = expected score, R<sub>o</sub> = opponent's rating, R<sub>p</sub> = player's rating</p>
+                    <p>Where E = expected score, R<sub>o</sub> = opponent&apos;s rating, R<sub>p</sub> = player&apos;s rating</p>
                     <p className="mt-1 text-gray-500 italic">This calculates the expected score for a single game. For multiple games, sum the expected scores for each game.</p>
                   </div>
                 </div>
@@ -590,6 +644,7 @@ const FideRatingEstimator: React.FC = () => {
                     <li><strong>Perfect Score:</strong> Performance rating = 800 points above the strongest opponent</li>
                     <li><strong>Zero Score:</strong> Performance rating = 800 points below the weakest opponent</li>
                     <li><strong>Rating Floor:</strong> FIDE ratings cannot drop below 1000</li>
+                    <li><strong>Rating Period:</strong> FIDE publishes official ratings monthly</li>
                   </ul>
                 </div>
               </div>
@@ -597,9 +652,38 @@ const FideRatingEstimator: React.FC = () => {
             
             <div className="divider"></div>
             
+            <div>
+              <h4 className="font-medium mb-2">Official FIDE Resources</h4>
+              <ul className="list-disc pl-5 text-xs space-y-2">
+                <li>
+                  <a href="https://ratings.fide.com/calc.phtml" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    Official FIDE Rating Calculator
+                  </a>
+                  <p className="text-gray-600 mt-1">The official calculator provided by FIDE to estimate rating changes.</p>
+                </li>
+                <li>
+                  <a href="https://handbook.fide.com/chapter/B022017" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    FIDE Rating Regulations Handbook
+                  </a>
+                  <p className="text-gray-600 mt-1">The official FIDE regulations describing how ratings are calculated.</p>
+                </li>
+                <li>
+                  <a href="https://ratings.fide.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    FIDE Ratings Database
+                  </a>
+                  <p className="text-gray-600 mt-1">Look up any player&apos;s official FIDE rating and history.</p>
+                </li>
+              </ul>
+            </div>
+            
+            <div className="divider"></div>
+            
             <div className="text-xs text-gray-500">
               <p>
-                This calculator implements the FIDE rating formulas as described in the FIDE Handbook. For official ratings, please refer to the <a href="https://ratings.fide.com/" target="_blank" rel="noopener noreferrer" className="link link-primary">Official FIDE Ratings website</a>.
+                This calculator implements the FIDE rating formulas as described in the FIDE Handbook. While we strive for accuracy, please refer to the official FIDE resources for definitive calculations.
+              </p>
+              <p className="mt-1">
+                <strong>Note:</strong> This calculator is for estimation purposes only and does not represent official FIDE calculations. FIDE may apply additional rules in specific situations.
               </p>
             </div>
           </div>

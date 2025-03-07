@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useRef, KeyboardEvent, useEffect } from 'react';
-import { Facebook, Twitter, Share2, Calculator, User, Hash, Award, Clock, Calendar, Link as LinkIcon, Plus, Trash2 } from 'lucide-react';
+// import { Facebook, Twitter, Share2, Calculator, User, Hash, Award, Clock, Calendar, Link as LinkIcon, Plus, Trash2 } from 'lucide-react';
+import { Facebook, Twitter, Calculator, Link as LinkIcon, Plus, Trash2 } from 'lucide-react';
 
 interface ResultsState {
   show: boolean;
@@ -547,7 +548,7 @@ const EloEstimator: React.FC = () => {
                 <div>
                   <h4 className="font-medium">Performance Rating</h4>
                   <p className="text-xs text-gray-700 mb-1">
-                    Your performance rating represents how well you played in a specific event, based on your results and your opponents' ratings.
+                    Your performance rating represents how well you played in a specific event, based on your results and your opponents&apos; ratings.
                   </p>
                   <div className="bg-base-200 p-2 rounded border text-xs">
                     <p><strong>Formula:</strong> Performance Rating = Average Opponent Rating + Rating Difference</p>
@@ -560,7 +561,7 @@ const EloEstimator: React.FC = () => {
                 <div>
                   <h4 className="font-medium">K-Factor</h4>
                   <p className="text-xs text-gray-700 mb-1">
-                    The K-factor determines how much your rating can change after an event. It's higher for newer players and lower for established players.
+                    The K-factor determines how much your rating can change after an event. It&apos;s higher for newer players and lower for established players.
                   </p>
                   <ul className="list-disc pl-5 text-xs space-y-0.5">
                     <li><strong>K=32:</strong> For players with fewer than 8 rated games</li>

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
 export const metadata = {
   title: 'Chess Tools & Resources',
@@ -159,12 +158,12 @@ export default function HomePage() {
             <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">About Our Chess Tools</h2>
             <p className="text-base-content/80 mb-6 text-sm sm:text-base">
               Our chess tools are designed to help players of all levels improve their game. 
-              Whether you're a beginner looking to understand your rating or an experienced player 
+              Whether you&apos;re a beginner looking to understand your rating or an experienced player 
               analyzing your games, we have resources to support your chess journey.
             </p>
             <p className="text-base-content/80 text-sm sm:text-base">
               These tools use official USCF formulas and best practices to provide accurate 
-              and helpful information. We're constantly working to add new features and improve 
+              and helpful information. We&apos;re constantly working to add new features and improve 
               existing ones based on user feedback.
             </p>
           </div>
