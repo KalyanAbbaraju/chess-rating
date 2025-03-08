@@ -80,6 +80,17 @@ export default function SideNav() {
                 }`}
               >
                 <BarChart2 size={18} className="mr-3 flex-shrink-0" />
+                <span>ELO Rating Estimator</span>
+              </Link>
+              <Link 
+                href="/uschess-rating-estimator" 
+                className={`flex items-center px-3 py-2 rounded-md transition-colors ${
+                  isActive('/uschess-rating-estimator') 
+                    ? 'bg-blue-50 text-blue-600 font-medium' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <BarChart2 size={18} className="mr-3 flex-shrink-0" />
                 <span>US Chess Rating Estimator</span>
               </Link>
             </li>

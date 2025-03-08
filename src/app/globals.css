@@ -100,3 +100,12 @@ aside a, aside button, aside span {
 h1, h2, h3, h4, h5, h6, p, span, button, a, label {
   color: var(--text-color);
 }
+
+.math-display {
+  overflow-x: auto;
+  padding: 8px 0;
+}
+
+.math {
+  font-size: 1.1em;
+}
