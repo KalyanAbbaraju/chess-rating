@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import React from 'react';
-import { getMarkdownContent } from '@/lib/markdownUtils';
+// import { getMarkdownContent } from '@/lib/markdown';
 
 interface ServerInfoContentProps {
   contentPath: string;

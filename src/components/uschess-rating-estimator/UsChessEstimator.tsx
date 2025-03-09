@@ -17,6 +17,20 @@ const generateId = () => {
   return Math.random().toString(36).substring(2, 10);
 };
 
+// Create an interface for updates
+interface UrlParamUpdates {
+  currentRating?: string;
+  priorGames?: string;
+  uscfId?: string;
+  highestRating?: string;
+  age?: string;
+  applyBonus?: boolean;
+  fideRating?: string;
+  cfcRating?: string;
+  isLifeMaster?: boolean;
+  opponents?: SharedOpponentData[];
+}
+
 const UsChessEstimator: React.FC = () => {
   const [opponents, setOpponents] = useState<SharedOpponentData[]>([
     { rating: '', result: 'win', id: generateId() },
@@ -88,7 +102,7 @@ const UsChessEstimator: React.FC = () => {
       if (!current || !oppParam || !resultsParam) return;
       
       // Create an object to hold all updates
-      const updates: any = {};
+      const updates: UrlParamUpdates = {};
       
       // Prepare all updates without applying them yet
       if (current) updates.currentRating = current;
@@ -149,7 +163,7 @@ const UsChessEstimator: React.FC = () => {
           
           if (!isNaN(playerRating)) {
             // Create calculation inputs directly from our updates object
-            const gameResults = updates.opponents.map((opp: any) => ({
+            const gameResults = updates.opponents.map((opp: SharedOpponentData) => ({
               opponentRating: parseInt(opp.rating),
               result: opp.result === 'win' ? 1 : opp.result === 'draw' ? 0.5 : 0
             }));
