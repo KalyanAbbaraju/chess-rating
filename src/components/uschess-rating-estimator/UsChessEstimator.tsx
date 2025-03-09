@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useRef, KeyboardEvent, useEffect } from 'react';
-// import { Facebook, Twitter, Share2, Calculator, User, Hash, Award, Clock, Calendar, Link as LinkIcon, Plus, Trash2 } from 'lucide-react';
-import { Facebook, Twitter, Calculator, Link as LinkIcon, Plus, Trash2, Info } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Calculator, Link as LinkIcon, Twitter, Info } from 'lucide-react';
 import { calculateUsChessRating } from '@/lib/usChessRatingCalculator';
 import { RatingResult } from '@/lib/ratingTypes';
 import InfoContent from '../shared/InfoContent';
@@ -31,9 +30,6 @@ const UsChessEstimator: React.FC = () => {
   const [copySuccess, setCopySuccess] = useState<string>('');
   const [activeTab, setActiveTab] = useState<string>("calculator");
   const [visualizationType, setVisualizationType] = useState<'visual' | 'table'>('visual');
-  
-  // Refs for keyboard navigation
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   
   // Add state for highest achieved rating and performance method
   const [highestRating, setHighestRating] = useState<string>('');
@@ -69,28 +65,23 @@ const UsChessEstimator: React.FC = () => {
     if (typeof window !== 'undefined') {
       const searchParams = new URLSearchParams(window.location.search);
       
-      // Get current rating
+      // Extract all URL parameters at the beginning
       const currentParam = searchParams.get('current');
-      if (currentParam) {
-        setCurrentRating(currentParam);
-      }
-      
-      // Get prior games
       const priorParam = searchParams.get('prior');
-      if (priorParam) {
-        setPriorGames(priorParam);
-      }
-      
-      // Get age
       const ageParam = searchParams.get('age');
-      if (ageParam) {
-        setAge(ageParam);
-      }
-      
-      // Get opponent ratings
       const oppParam = searchParams.get('opp');
       const resultsParam = searchParams.get('results');
+      const highestParam = searchParams.get('highest');
+      const fideRatingParam = searchParams.get('fide');
+      const cfcRatingParam = searchParams.get('cfc');
+      const bonusParam = searchParams.get('bonus');
       
+      // Set state values from parameters
+      if (currentParam) setCurrentRating(currentParam);
+      if (priorParam) setPriorGames(priorParam);
+      if (ageParam) setAge(ageParam);
+      
+      // Process opponent ratings if available
       if (oppParam) {
         const ratingsArray = oppParam.split(',').map(r => r.trim());
         let resultsArray: ('win' | 'loss' | 'draw')[] = Array(ratingsArray.length).fill('win');
@@ -99,94 +90,43 @@ const UsChessEstimator: React.FC = () => {
         if (resultsParam) {
           resultsArray = resultsParam.split(',').map(r => {
             const trimmed = r.trim().toLowerCase();
-            if (trimmed === 'loss' || trimmed === 'l') return 'loss';
-            if (trimmed === 'draw' || trimmed === 'd') return 'draw';
-            return 'win'; // Default to win
+            if (trimmed === 'loss' || trimmed === 'l') return 'loss' as const;
+            if (trimmed === 'draw' || trimmed === 'd') return 'draw' as const;
+            return 'win' as const; // Default to win
           });
         }
         
         // Create formatted opponents array
         const formattedOpponents = ratingsArray.map((rating: string, index: number) => ({
           rating,
-          result: resultsArray[index] || 'win',
+          result: (resultsArray[index] || 'win') as 'win' | 'loss' | 'draw',
           id: generateId()
         }));
         
         setOpponents(formattedOpponents);
-        
-        // Auto-calculate if we have current rating and opponents
-        if (currentParam && ratingsArray.length > 0) {
-          setTimeout(() => {
-            const currentRatingValue = parseInt(currentParam);
-            if (!isNaN(currentRatingValue)) {
-              // Transform data for calculator
-              const gameResults = formattedOpponents
-                .filter(opp => opp.rating !== '' && !isNaN(parseInt(opp.rating)))
-                .map(opp => ({
-                  opponentRating: parseInt(opp.rating),
-                  result: opp.result === 'win' ? 1 : opp.result === 'draw' ? 0.5 : 0
-                }));
-              
-              if (gameResults.length > 0) {
-                const playerPriorGamesNum = priorParam ? parseInt(priorParam) : 0;
-                
-                // Call calculation function
-                const calculationResult = calculateUsChessRating(
-                  currentRatingValue,
-                  playerPriorGamesNum,
-                  gameResults,
-                  true, // Apply bonus points
-                  currentRatingValue, // Use current rating as highest achieved
-                  ageParam ? parseInt(ageParam) : 0, // Player age
-                  0, // FIDE rating (not available from URL)
-                  0, // CFC rating (not available from URL)
-                  isLifeMaster  // Pass the isLifeMaster value from state
-                );
-                
-                setResults(calculationResult);
-              }
-            }
-          }, 100); // Slightly longer timeout to ensure state updates
-        }
-      }
-      
-      // Get additional parameters
-      const highestParam = searchParams.get('highest');
-      if (highestParam) {
-        setHighestRating(highestParam);
-      }
-      
-      const fideRatingParam = searchParams.get('fiderating');
-      if (fideRatingParam) {
-        setFideRating(fideRatingParam);
-      }
-      
-      const cfcRatingParam = searchParams.get('cfcrating');
-      if (cfcRatingParam) {
-        setCfcRating(cfcRatingParam);
-      }
-      
-      const bonusParam = searchParams.get('bonus');
-      if (bonusParam !== null) {
-        setApplyBonus(bonusParam.toLowerCase() === 'true');
       }
       
       // Auto-calculate if all needed data is available
-      if (currentParam && priorParam && ageParam && oppParam && resultsParam && highestParam && fideRatingParam && cfcRatingParam && bonusParam) {
+      if (currentParam && priorParam && ageParam && oppParam && resultsParam && 
+          highestParam && fideRatingParam && cfcRatingParam && bonusParam) {
         setTimeout(() => {
           const currentRatingValue = parseInt(currentParam);
           const playerPriorGamesNum = parseInt(priorParam);
           const ageValue = parseInt(ageParam);
+          
+          // Define ratingsArray again in this scope
+          const ratingsArray = oppParam.split(',').map(r => r.trim());
+          
           const resultsArray = resultsParam.split(',').map(r => {
             const trimmed = r.trim().toLowerCase();
-            if (trimmed === 'loss' || trimmed === 'l') return 'loss';
-            if (trimmed === 'draw' || trimmed === 'd') return 'draw';
-            return 'win'; // Default to win
+            if (trimmed === 'loss' || trimmed === 'l') return 'loss' as const;
+            if (trimmed === 'draw' || trimmed === 'd') return 'draw' as const;
+            return 'win' as const; // Default to win
           });
           
           const formattedOpponents = ratingsArray.map((rating: string, index: number) => ({
             rating,
-            result: resultsArray[index] || 'win',
+            result: (resultsArray[index] || 'win') as 'win' | 'loss' | 'draw',
             id: generateId()
           }));
           
@@ -215,7 +155,15 @@ const UsChessEstimator: React.FC = () => {
         }, 100); // Slightly longer timeout to ensure state updates
       }
     }
-  }, []);
+  }, [
+    currentRating,
+    priorGames,
+    applyBonus,
+    cfcRating,
+    fideRating,
+    highestRating,
+    isLifeMaster
+  ]);
   
   // Add these state variables at the top of the component
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -243,22 +191,6 @@ const UsChessEstimator: React.FC = () => {
     const newOpponents = [...opponents];
     newOpponents[index] = { ...newOpponents[index], result };
     setOpponents(newOpponents);
-  };
-  
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number): void => {
-    if (e.key === 'Enter' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      const nextIndex = index + 1;
-      if (nextIndex < inputRefs.current.length && inputRefs.current[nextIndex]) {
-        inputRefs.current[nextIndex]?.focus();
-      }
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      const prevIndex = index - 1;
-      if (prevIndex >= 0 && inputRefs.current[prevIndex]) {
-        inputRefs.current[prevIndex]?.focus();
-      }
-    }
   };
   
   // Calculate results
@@ -355,8 +287,8 @@ const UsChessEstimator: React.FC = () => {
     
     // Additional parameters
     if (highestRating) params.set('highest', highestRating);
-    if (fideRating) params.set('fiderating', fideRating);
-    if (cfcRating) params.set('cfcrating', cfcRating);
+    if (fideRating) params.set('fide', fideRating);
+    if (cfcRating) params.set('cfc', cfcRating);
     params.set('bonus', applyBonus.toString());
     
     const queryString = params.toString();
@@ -388,16 +320,6 @@ const UsChessEstimator: React.FC = () => {
     const text = `Check out my US Chess rating calculation!`;
     const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`;
     window.open(shareUrl, '_blank');
-  };
-  
-  // Handle US Chess ID lookup
-  const handleLookupUSCFID = (): void => {
-    if (uscfId.trim() === '') {
-      alert("Please enter a USCF ID to look up");
-      return;
-    }
-    
-    window.open(`https://new.uschess.org/player-search?field_player_id=${uscfId}`, '_blank');
   };
   
   // Add a new opponent
@@ -865,7 +787,10 @@ const UsChessEstimator: React.FC = () => {
                         className="p-1 text-blue-600 hover:text-blue-800"
                         title="Share on Facebook"
                       >
-                        <Facebook size={14} />
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z" 
+                            fill="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
                       </button>
                       <button onClick={shareViaTwitter} 
                         className="p-1 text-sky-500 hover:text-sky-600"

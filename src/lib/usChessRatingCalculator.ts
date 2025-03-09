@@ -1,4 +1,4 @@
-import { RatingCalculationResult, RatingResult, UsChessRatingResult } from './ratingTypes';
+import { RatingResult, UsChessRatingResult } from './ratingTypes';
 
 /**
 * Interface representing a game result
@@ -49,7 +49,7 @@ export function calculateUsChessRating(
 ): RatingResult {
   // Initialize variables
   let rating = currentRating;
-  let totalGames = numPreviousGames;
+  const totalGames = numPreviousGames;
   
   // If player is unrated, assign initial rating of 1300
   if (numPreviousGames === 0 && currentRating === 0) {

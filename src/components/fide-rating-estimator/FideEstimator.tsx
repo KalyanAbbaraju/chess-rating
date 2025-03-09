@@ -1,14 +1,13 @@
 'use client';
 
-import React, { useState, useRef, KeyboardEvent, useEffect } from 'react';
-import { Facebook, Twitter, Calculator, Link as LinkIcon, Plus, Trash2, Info } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calculator, Link as LinkIcon, Twitter } from 'lucide-react';
 import { calculateFIDERating } from '@/lib/fideRatingCalculator';
 import { RatingResult } from '@/lib/ratingTypes';
 import RatingChangeVisual from '../shared/RatingChangeVisual';
 import RatingResultsTable from '../shared/RatingResultsTable';
 import InfoContent from '../shared/InfoContent';
 import OpponentList, { OpponentData } from '../shared/OpponentList';
-import Tooltip from '../shared/Tooltip';
 
 // Add utility function to generate random ID if it doesn't exist elsewhere
 const generateId = () => {
@@ -45,9 +44,6 @@ const FideEstimator: React.FC = () => {
       setShowError(false);
     }, 5000);
   };
-  
-  // Refs for keyboard navigation
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   
   // URL parameter handling on mount
   useEffect(() => {
@@ -119,9 +115,6 @@ const FideEstimator: React.FC = () => {
                 }));
               
               if (gameResults.length > 0) {
-                // Get K-factor (default to 20 if not provided)
-                const kFactorValue = kFactorParam ? parseInt(kFactorParam) : 20;
-                
                 // Call calculation function for FIDE ratings
                 const previousGamesNum = parseInt(previousGames) || 0;
                 
@@ -139,7 +132,7 @@ const FideEstimator: React.FC = () => {
       }
       
     }
-  }, []);
+  }, [previousGames]);
   
   // Handlers for OpponentList component
   const handleOpponentRatingChange = (index: number, value: string): void => {
@@ -474,7 +467,10 @@ const FideEstimator: React.FC = () => {
                         className="p-1 text-blue-600 hover:text-blue-800"
                         title="Share on Facebook"
                       >
-                        <Facebook size={14} />
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z" 
+                            fill="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
                       </button>
                       <button onClick={shareViaTwitter} 
                         className="p-1 text-sky-500 hover:text-sky-600"

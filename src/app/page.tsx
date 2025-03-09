@@ -1,4 +1,7 @@
+import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { Calculator, ChessBoard, BarChart2, RefreshCcw } from 'lucide-react';
 
 export const metadata = {
   title: 'Chess Tools & Resources',
@@ -22,16 +25,18 @@ export default function HomePage() {
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link 
-                  href="/rating-estimator" 
-                  className="btn btn-lg bg-white text-primary hover:bg-base-200 shadow-md"
+                  href="/uschess-rating-estimator" 
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-white text-primary font-medium border border-transparent hover:bg-blue-50 hover:border-blue-100 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
-                  Rating Estimator
+                  <Calculator className="w-5 h-5 mr-2" />
+                  US Chess Rating Estimator
                 </Link>
                 <Link 
-                  href="#tools" 
-                  className="btn btn-lg btn-outline border-white text-white hover:bg-white hover:text-primary"
+                  href="/fide-rating-estimator" 
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-blue-50 text-primary font-medium border border-blue-100 hover:bg-white hover:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
                 >
-                  Explore Tools
+                  <BarChart2 className="w-5 h-5 mr-2" />
+                  FIDE Rating Estimator
                 </Link>
               </div>
             </div>
@@ -57,23 +62,43 @@ export default function HomePage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 md:mb-12">Our Chess Tools</h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Rating Calculator Card */}
+            {/* US Chess Rating Estimator Card */}
             <div className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300">
               <div className="h-32 sm:h-40 bg-primary flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-primary-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
+                <Calculator className="h-16 w-16 text-primary-content" />
               </div>
               <div className="p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-semibold mb-2">Rating Estimator</h3>
+                <h3 className="text-lg sm:text-xl font-semibold mb-2">US Chess Rating Estimator</h3>
                 <p className="text-base-content/70 mb-4 text-sm sm:text-base">
-                  Calculate your expected unofficial USCF rating based on performance.
+                  Calculate your expected US Chess rating changes based on tournament performance.
                 </p>
                 <Link 
-                  href="/rating-estimator" 
+                  href="/uschess-rating-estimator" 
                   className="text-primary hover:text-primary-focus font-medium inline-flex items-center text-sm sm:text-base"
                 >
-                  Try Rating Estimator
+                  Try US Chess Estimator
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+            
+            {/* FIDE Rating Estimator Card */}
+            <div className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300">
+              <div className="h-32 sm:h-40 bg-indigo-600 flex items-center justify-center">
+                <BarChart2 className="h-16 w-16 text-white" />
+              </div>
+              <div className="p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-semibold mb-2">FIDE Rating Estimator</h3>
+                <p className="text-base-content/70 mb-4 text-sm sm:text-base">
+                  Estimate your FIDE Elo rating changes using official FIDE formulas.
+                </p>
+                <Link 
+                  href="/fide-rating-estimator" 
+                  className="text-primary hover:text-primary-focus font-medium inline-flex items-center text-sm sm:text-base"
+                >
+                  Try FIDE Estimator
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
@@ -178,10 +203,11 @@ export default function HomePage() {
             Start using our chess tools today and take your game to the next level.
           </p>
           <Link 
-            href="/rating-estimator" 
-            className="btn btn-lg bg-white text-primary hover:bg-base-200 shadow-md"
+            href="/uschess-rating-estimator" 
+            className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-white text-primary font-medium hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
           >
-            Try the Rating Estimator
+            <Calculator className="w-5 h-5 mr-2" />
+            Try Our Rating Calculators
           </Link>
         </div>
       </section>

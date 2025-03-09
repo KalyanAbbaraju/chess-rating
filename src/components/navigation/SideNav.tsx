@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronLeft, Settings, BarChart2, FileText, BookOpen, Home, Menu, Info, Mail } from 'lucide-react';
+import { ChevronLeft, Calculator, BarChart2, Home, Menu, Mail } from 'lucide-react';
 
 export default function SideNav() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -15,7 +15,7 @@ export default function SideNav() {
   }, [pathname]);
   
   const isActive = (path: string) => pathname === path;
-
+  
   return (
     <>
       {/* Toggle button - always visible */}
@@ -27,7 +27,7 @@ export default function SideNav() {
           <Menu size={20} />
         </button>
       </div>
-
+      
       {/* Overlay - appears when sidebar is open */}
       {showSidebar && (
         <div 
@@ -36,7 +36,7 @@ export default function SideNav() {
         />
       )}
       
-      {/* Sidebar - consistent across all screen sizes */}
+      {/* Sidebar - fixed positioning so it doesn't affect content flow */}
       <aside 
         className={`fixed top-0 left-0 h-full w-64 bg-white text-gray-800 z-40 transition-transform duration-300 shadow-lg ${
           showSidebar ? 'translate-x-0' : '-translate-x-full'
@@ -72,17 +72,6 @@ export default function SideNav() {
             </li>
             <li>
               <Link 
-                href="/elo-rating-estimator" 
-                className={`flex items-center px-3 py-2 rounded-md transition-colors ${
-                  isActive('/elo-rating-estimator') 
-                    ? 'bg-blue-50 text-blue-600 font-medium' 
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <BarChart2 size={18} className="mr-3 flex-shrink-0" />
-                <span>ELO Rating Estimator</span>
-              </Link>
-              <Link 
                 href="/uschess-rating-estimator" 
                 className={`flex items-center px-3 py-2 rounded-md transition-colors ${
                   isActive('/uschess-rating-estimator') 
@@ -90,7 +79,7 @@ export default function SideNav() {
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <BarChart2 size={18} className="mr-3 flex-shrink-0" />
+                <Calculator size={18} className="mr-3 flex-shrink-0" />
                 <span>US Chess Rating Estimator</span>
               </Link>
             </li>
@@ -103,34 +92,8 @@ export default function SideNav() {
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <FileText size={18} className="mr-3 flex-shrink-0" />
+                <BarChart2 size={18} className="mr-3 flex-shrink-0" />
                 <span>FIDE Rating Estimator</span>
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/resources" 
-                className={`flex items-center px-3 py-2 rounded-md transition-colors ${
-                  isActive('/resources') 
-                    ? 'bg-blue-50 text-blue-600 font-medium' 
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <BookOpen size={18} className="mr-3 flex-shrink-0" />
-                <span>Resources</span>
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/about" 
-                className={`flex items-center px-3 py-2 rounded-md transition-colors ${
-                  isActive('/about') 
-                    ? 'bg-blue-50 text-blue-600 font-medium' 
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Info size={18} className="mr-3 flex-shrink-0" />
-                <span>About</span>
               </Link>
             </li>
             <li>
@@ -146,25 +109,9 @@ export default function SideNav() {
                 <span>Contact Us</span>
               </Link>
             </li>
-            <li>
-              <Link 
-                href="/settings" 
-                className={`flex items-center px-3 py-2 rounded-md transition-colors ${
-                  isActive('/settings') 
-                    ? 'bg-blue-50 text-blue-600 font-medium' 
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Settings size={18} className="mr-3 flex-shrink-0" />
-                <span>Settings</span>
-              </Link>
-            </li>
           </ul>
         </nav>
       </aside>
-      
-      {/* Content padding to avoid overlay with toggle button */}
-      <div className="md:pl-12 pt-12"></div>
     </>
   );
 } 

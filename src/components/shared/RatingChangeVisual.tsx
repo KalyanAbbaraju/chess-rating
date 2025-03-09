@@ -1,20 +1,15 @@
 import React from 'react';
-import { RatingResult, UsChessRatingResult, FideRatingResult } from '@/lib/ratingTypes';
+import { RatingResult } from '@/lib/ratingTypes';
 import { 
   ArrowUp, 
-  ArrowDown, 
-  Award, 
-  TrendingUp, 
-  TrendingDown, 
-  Minus, 
-  AlertTriangle, 
+  ArrowDown,
   Plus, 
-  ArrowRight, 
-  Trophy, 
+  ArrowRight,
   BarChart2, 
   ChevronDown, 
   AlertOctagon, 
-  Scale 
+  Scale, 
+  Award
 } from 'lucide-react';
 
 interface RatingChangeVisualProps {
@@ -33,7 +28,6 @@ const RatingChangeVisual: React.FC<RatingChangeVisualProps> = ({ results }) => {
     kFactor,
     expectedScore,
     actualScore,
-    totalGames,
   } = results;
   
   // Get system-specific properties using type guard
@@ -50,11 +44,9 @@ const RatingChangeVisual: React.FC<RatingChangeVisualProps> = ({ results }) => {
   // Common variables for both rating systems
   const isPositiveChange = ratingChange > 0;
   const isNegativeChange = ratingChange < 0;
-  const isNoChange = ratingChange === 0;
   
   const formattedBaseChange = baseRatingChange >= 0 ? `+${Math.round(baseRatingChange)}` : `${Math.round(baseRatingChange)}`;
   const formattedBonus = bonus > 0 ? `+${bonus}` : '0';
-  const formattedRatingChange = isPositiveChange ? `+${ratingChange}` : `${ratingChange}`;
   
   // For the score badge
   const scoreDifference = actualScore ? actualScore - expectedScore : 0;
@@ -73,7 +65,7 @@ const RatingChangeVisual: React.FC<RatingChangeVisualProps> = ({ results }) => {
   
   if (scoreDifference >= highThreshold) {
     performanceBadge = {
-      icon: <Trophy size={16} />,
+      icon: <Award size={16} />,
       text: 'Outstanding Performance',
       color: 'green',
       description: 'You significantly exceeded expectations by scoring much higher than predicted'
@@ -208,33 +200,46 @@ const RatingChangeVisual: React.FC<RatingChangeVisualProps> = ({ results }) => {
         </div>
       </div>
       
-      {/* Stats grid - simplified with Performance Rating */}
+      {/* Flexible stats grid - simplified with just text, automatically adjusting layout */}
       <div className="mb-4">
-        <div className="grid grid-cols-3 gap-3">
-          {/* Performance Rating */}
-          <div className="bg-blue-50 p-3 rounded-md text-center border border-blue-100">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-5">
+          {/* Common stats for both systems */}
+          <div className="text-center">
             <div className="text-xs text-gray-600 mb-1">Performance Rating</div>
-            <div className="text-lg font-bold">
-              {performanceRating || 'N/A'}
-            </div>
+            <div className="text-lg font-bold">{performanceRating || 'N/A'}</div>
           </div>
           
-          {/* K-Factor */}
-          <div className="bg-blue-50 p-3 rounded-md text-center border border-blue-100">
+          <div className="text-center">
             <div className="text-xs text-gray-600 mb-1">K-Factor</div>
             <div className="text-lg font-bold">{kFactor}</div>
           </div>
           
-          {/* System-specific third stat */}
-          {results.type === 'uschess' ? (
-            <div className="bg-blue-50 p-3 rounded-md text-center border border-blue-100">
+          {/* System-specific stats */}
+          {results.type === 'uschess' && (
+            <div className="text-center">
               <div className="text-xs text-gray-600 mb-1">Current Floor</div>
               <div className="text-lg font-bold">{currentFloor || 'N/A'}</div>
             </div>
-          ) : (
-            <div className="bg-blue-50 p-3 rounded-md text-center border border-blue-100">
+          )}
+          
+          {results.type === 'uschess' && (
+            <div className="text-center">
+              <div className="text-xs text-gray-600 mb-1">Rating Category</div>
+              <div className="text-lg font-bold">{results.ratingCategory}</div>
+            </div>
+          )}
+          
+          {results.type === 'fide' && (
+            <div className="text-center">
               <div className="text-xs text-gray-600 mb-1">Classification</div>
               <div className="text-lg font-bold">{classification || 'N/A'}</div>
+            </div>
+          )}
+          
+          {results.type === 'fide' && dynamicKFactor && dynamicKFactor !== kFactor && (
+            <div className="text-center">
+              <div className="text-xs text-gray-600 mb-1">Dynamic K-Factor</div>
+              <div className="text-lg font-bold">{dynamicKFactor}</div>
             </div>
           )}
         </div>

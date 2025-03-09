@@ -1,4 +1,4 @@
-import { FideRatingResult, RatingCalculationResult, RatingResult } from './ratingTypes';
+import { FideRatingResult, RatingResult } from './ratingTypes';
 
 // Interface for game results
 export interface GameResult {
@@ -24,7 +24,7 @@ export function calculateFIDERating(
 ): RatingResult {
   // Initialize variables
   let rating = currentRating;
-  let totalGames = numPreviousGames;
+  const totalGames = numPreviousGames;
   
   // If player is unrated, do not assign an initial rating yet
   if (currentRating === 0) {
@@ -72,10 +72,7 @@ export function calculateFIDERating(
   // Calculate expected score for each game
   for (const { opponentRating, result } of gameResults) {
     const ratingDifference = opponentRating - rating;
-    let winningExpectancy: number;
-    
-    // Standard winning expectancy formula
-    winningExpectancy = 1 / (1 + Math.pow(10, ratingDifference / 400));
+    const winningExpectancy = 1 / (1 + Math.pow(10, ratingDifference / 400));
     
     expectedScore += winningExpectancy;
     actualScore += result;
@@ -128,7 +125,7 @@ function calculateFidePerformanceRating(games: GameResult[], totalScore: number)
   // Rating Difference is based on score percentage
   const scorePercentage = (totalScore / totalGames) * 100;
   // FIDE rating difference table approximation
-  let ratingDifference = getRatingDifference(scorePercentage);
+  const ratingDifference = getRatingDifference(scorePercentage);
   
   return Math.round(avgOpponentRating + ratingDifference);
 } 

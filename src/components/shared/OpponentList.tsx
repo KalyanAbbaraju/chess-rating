@@ -65,7 +65,9 @@ const OpponentList: React.FC<OpponentListProps> = ({
                 value={opponent.rating}
                 onChange={(e) => onRatingChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
-                ref={(el) => (inputRefs.current[index] = el)}
+                ref={(el) => {
+                  inputRefs.current[index] = el;
+                }}
                 placeholder="Rating"
                 className="block px-2 py-1 text-sm border-0 border-b border-gray-300 focus:border-b focus:border-blue-500 focus:outline-none focus:ring-0 w-20 bg-white"
               />

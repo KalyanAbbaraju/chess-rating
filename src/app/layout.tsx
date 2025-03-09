@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import SideNav from "@/components/navigation/SideNav";
 import "./globals.css";
+import Footer from '@/components/layout/Footer';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,29 +19,6 @@ export const metadata: Metadata = {
   title: "Chess Companion",
   description: "Your complete chess companion for analysis and improvement",
 };
-
-function Footer() {
-  return (
-    <footer className="w-full py-6 md:py-0 md:px-8 md:h-14 border-t border-neutral/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex flex-col md:flex-row items-center justify-between gap-4 md:h-14 max-w-screen-2xl">
-        <p className="text-sm text-center md:text-left text-muted-foreground">
-          © 2025 Chess Companion. All rights reserved.
-        </p>
-        <div className="flex items-center gap-4">
-          <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Terms
-          </Link>
-          <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Privacy
-          </Link>
-          <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Contact
-          </Link>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 export default function RootLayout({
   children,

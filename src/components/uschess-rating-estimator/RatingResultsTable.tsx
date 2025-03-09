@@ -1,8 +1,8 @@
 import React from 'react';
-import { RatingCalculationResult } from '@/lib/usChessRatingCalculator';
+import { RatingResult } from '@/lib/ratingTypes';
 
 interface RatingResultsTableProps {
-  results: RatingCalculationResult;
+  results: RatingResult;
 }
 
 const RatingResultsTable: React.FC<RatingResultsTableProps> = ({ results }) => {
@@ -22,25 +22,11 @@ const RatingResultsTable: React.FC<RatingResultsTableProps> = ({ results }) => {
               <td className="py-2 font-bold text-blue-700 text-base">{results.newRating}</td>
             </tr>
             
-            {/* Performance Rating */}
-            <tr className="bg-white">
-              <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Performance Rating</td>
-              <td className="py-1.5 font-medium">{results.performanceRating}</td>
-            </tr>
-            
             {/* Rating Change */}
             <tr className="bg-blue-50">
               <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Rating Change</td>
               <td className={`py-1.5 font-medium ${results.ratingChange > 0 ? 'text-green-600' : results.ratingChange < 0 ? 'text-red-600' : ''}`}>
                 {results.ratingChange > 0 ? '+' : ''}{results.ratingChange}
-              </td>
-            </tr>
-            
-            {/* Bonus */}
-            <tr className="bg-white">
-              <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Bonus Points</td>
-              <td className={`py-1.5 font-medium ${results.bonus > 0 ? 'text-green-600' : ''}`}>
-                {results.bonus > 0 ? '+' + results.bonus : '0'}
               </td>
             </tr>
             
@@ -50,23 +36,62 @@ const RatingResultsTable: React.FC<RatingResultsTableProps> = ({ results }) => {
               <td className="py-1.5 font-medium">{results.kFactor}</td>
             </tr>
             
-            {/* Score */}
-            <tr className="bg-white">
-              <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Score</td>
-              <td className="py-1.5 font-medium">{results.totalScore}/{results.totalGames}</td>
-            </tr>
+            {/* Other fields conditionally rendered based on type */}
+            {results.type === 'uschess' && (
+              <>
+                {/* Performance Rating */}
+                <tr className="bg-white">
+                  <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Performance Rating</td>
+                  <td className="py-1.5 font-medium">{results.fidePerformanceRating}</td>
+                </tr>
+                
+                {/* Bonus */}
+                <tr className="bg-white">
+                  <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Bonus Points</td>
+                  <td className={`py-1.5 font-medium ${results.bonus > 0 ? 'text-green-600' : ''}`}>
+                    {results.bonus > 0 ? '+' + results.bonus : '0'}
+                  </td>
+                </tr>
+                
+                {/* Expected Score */}
+                <tr className="bg-white">
+                  <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Expected Score</td>
+                  <td className="py-1.5 font-medium">{results.expectedScore}</td>
+                </tr>
+              </>
+            )}
             
-            {/* Expected Score */}
-            <tr className="bg-blue-50">
-              <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Expected Score</td>
-              <td className="py-1.5 font-medium">{results.expectedScore}</td>
-            </tr>
+            {results.type === 'fide' && (
+              <>
+                {/* Performance Rating */}
+                <tr className="bg-white">
+                  <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Performance Rating</td>
+                  <td className="py-1.5 font-medium">{results.performanceRating}</td>
+                </tr>
+                
+                {/* Expected Score */}
+                <tr className="bg-white">
+                  <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Expected Score</td>
+                  <td className="py-1.5 font-medium">{results.expectedScore}</td>
+                </tr>
+              </>
+            )}
             
-            {/* Total Games */}
-            <tr className="bg-white">
-              <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Total Games</td>
-              <td className="py-1.5 font-medium">{results.totalGames}</td>
-            </tr>
+            {/* Score - only if actualScore exists */}
+            {results.actualScore !== undefined && (
+              <tr className="bg-white">
+                <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Score</td>
+                <td className="py-1.5 font-medium">{results.actualScore}</td>
+              </tr>
+            )}
+            
+            {/* Total Games - only if totalGames exists */}
+            {results.totalGames !== undefined && (
+              <tr className="bg-white">
+                <td className="py-1.5 pr-3 text-xs text-gray-600 font-medium">Total Games</td>
+                <td className="py-1.5 font-medium">{results.totalGames}</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
