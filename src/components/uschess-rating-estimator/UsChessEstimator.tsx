@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Calculator, Link as LinkIcon, Twitter, Info } from 'lucide-react';
+import { Calculator, Link as LinkIcon, Twitter, Info, X } from 'lucide-react';
 import { calculateUsChessRating } from '@/lib/usChessRatingCalculator';
 import { RatingResult } from '@/lib/ratingTypes';
 import InfoContent from '../shared/InfoContent';
@@ -9,6 +9,7 @@ import RatingChangeVisual from '../shared/RatingChangeVisual';
 import RatingResultsTable from '../shared/RatingResultsTable';
 import OpponentList, { OpponentData as SharedOpponentData } from '../shared/OpponentList';
 import Tooltip from '../shared/Tooltip';
+import DisclaimerComponent from '@/components/common/DisclaimerComponent';
 
 // Add utility function to generate random ID if it doesn't exist elsewhere
 const generateId = () => {
@@ -343,6 +344,9 @@ const UsChessEstimator: React.FC = () => {
     
   //   // ... rest of calculation logic ...
   // };
+  
+  // Add this state at the beginning of your component:
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
   
   return (
     <div className="shadow-sm border border-gray-200 rounded-lg overflow-hidden">
@@ -814,15 +818,48 @@ const UsChessEstimator: React.FC = () => {
         )}
       </div>
       
-      <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 flex justify-between items-center text-xs text-gray-500">
-        <span>This is an estimate only; actual US Chess calculations may vary slightly.</span>
-        <button 
-          className="text-xs text-gray-600 hover:text-gray-900"
-          onClick={() => alert("We STRONGLY discourage players from using this estimator to decide whether to withdraw from an event based on their estimated post-event rating. The estimator may be off by a point or two!")}
-        >
-          Disclaimer
-        </button>
-      </div>
+      <DisclaimerComponent
+        shortText="This is an estimate only; actual US Chess calculations may vary slightly."
+        title="US Chess Rating Calculation Disclaimer"
+        detailedContent={
+          <>
+            <p className="mb-3">
+              The rating calculations provided by this tool are based on the published US Chess Federation 
+              rating formulas and are intended to be used for estimation purposes only.
+            </p>
+            
+            <p className="mb-3">
+              Actual official US Chess ratings may differ due to several factors:
+            </p>
+            
+            <ul className="list-disc pl-5 mb-3 space-y-1">
+              <li>Special rating adjustments applied by US Chess</li>
+              <li>Rounding differences in calculation methods</li>
+              <li>Tournament-specific rules or exceptions</li>
+              <li>Recent changes to the rating formula not yet reflected in this tool</li>
+              <li>Rating floor considerations</li>
+              <li>Provisional rating calculations for new players</li>
+            </ul>
+            
+            <p className="mb-3">
+              <strong>Important note:</strong> We strongly discourage players from using this estimator to decide 
+              whether to withdraw from an event based on their estimated post-event rating. The estimator may 
+              be off by a point or two!
+            </p>
+            
+            <p className="mb-3">
+              For official ratings, always refer to US Chess's official website and publications. 
+              This tool does not replace official ratings issued by US Chess.
+            </p>
+            
+            <p>
+              The developers of this tool make no guarantees about the accuracy of these estimates 
+              and are not affiliated with or endorsed by the US Chess Federation.
+            </p>
+          </>
+        }
+        className="px-6 py-3 bg-gray-50 border-t border-gray-200"
+      />
 
       {/* Toast notification for errors */}
       {showError && (

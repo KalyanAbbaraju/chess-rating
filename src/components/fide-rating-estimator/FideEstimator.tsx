@@ -8,6 +8,8 @@ import RatingChangeVisual from '../shared/RatingChangeVisual';
 import RatingResultsTable from '../shared/RatingResultsTable';
 import InfoContent from '../shared/InfoContent';
 import OpponentList, { OpponentData } from '../shared/OpponentList';
+import DisclaimerModal from '@/components/common/DisclaimerModal';
+import DisclaimerComponent from '@/components/common/DisclaimerComponent';
 
 // Add utility function to generate random ID if it doesn't exist elsewhere
 const generateId = () => {
@@ -266,6 +268,9 @@ const FideEstimator: React.FC = () => {
     window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=Check%20out%20my%20FIDE%20rating%20calculation!`, '_blank');
   };
 
+  // Add this state
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden max-w-3xl mx-auto">
       {/* Title at the top, centered */}
@@ -494,15 +499,48 @@ const FideEstimator: React.FC = () => {
         )}
       </div>
       
-      <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 flex justify-between items-center text-xs text-gray-500">
-        <span>This is an estimate only; official FIDE calculations may vary.</span>
-        <button 
-          className="text-xs text-gray-600 hover:text-gray-900"
-          onClick={() => showErrorMessage("This is an unofficial FIDE rating calculator and should be used for estimation purposes only.")}
-        >
-          Disclaimer
-        </button>
-      </div>
+      <DisclaimerComponent
+        shortText="This is an estimate only; actual FIDE calculations may vary slightly."
+        title="FIDE Rating Calculation Disclaimer"
+        detailedContent={
+          <>
+            <p className="mb-3">
+              The rating calculations provided by this tool are based on the published FIDE Elo 
+              rating formulas and are intended to be used for estimation purposes only.
+            </p>
+            
+            <p className="mb-3">
+              Actual official FIDE ratings may differ due to several factors:
+            </p>
+            
+            <ul className="list-disc pl-5 mb-3 space-y-1">
+              <li>Special rating adjustments applied by FIDE</li>
+              <li>Rounding differences in calculation methods</li>
+              <li>Tournament-specific rules or exceptions</li>
+              <li>Recent changes to the rating formula not yet reflected in this tool</li>
+              <li>Rating floor considerations for age groups</li>
+              <li>K-factor differences for different player categories</li>
+            </ul>
+            
+            <p className="mb-3">
+              <strong>Important note:</strong> FIDE ratings are calculated monthly, and all games within a rating 
+              period are considered together. This estimator calculates based on individual games which may differ 
+              from FIDE's batch processing approach.
+            </p>
+            
+            <p className="mb-3">
+              For official ratings, always refer to FIDE's official website and publications. 
+              This tool does not replace official ratings issued by FIDE.
+            </p>
+            
+            <p>
+              The developers of this tool make no guarantees about the accuracy of these estimates 
+              and are not affiliated with or endorsed by FIDE.
+            </p>
+          </>
+        }
+        className="px-6 py-3 bg-gray-50 border-t border-gray-200"
+      />
 
       {/* Toast notification for errors */}
       {showError && (
