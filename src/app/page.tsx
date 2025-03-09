@@ -1,7 +1,6 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { Calculator, ChessBoard, BarChart2, RefreshCcw } from 'lucide-react';
+import { Calculator, BarChart2 } from 'lucide-react';
 
 export const metadata = {
   title: 'Chess Tools & Resources',

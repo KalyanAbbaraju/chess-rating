@@ -8,7 +8,6 @@ import RatingChangeVisual from '../shared/RatingChangeVisual';
 import RatingResultsTable from '../shared/RatingResultsTable';
 import InfoContent from '../shared/InfoContent';
 import OpponentList, { OpponentData } from '../shared/OpponentList';
-import DisclaimerModal from '@/components/common/DisclaimerModal';
 import DisclaimerComponent from '@/components/common/DisclaimerComponent';
 
 // Add utility function to generate random ID if it doesn't exist elsewhere
@@ -268,9 +267,6 @@ const FideEstimator: React.FC = () => {
     window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=Check%20out%20my%20FIDE%20rating%20calculation!`, '_blank');
   };
 
-  // Add this state
-  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
-
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden max-w-3xl mx-auto">
       {/* Title at the top, centered */}
@@ -525,11 +521,11 @@ const FideEstimator: React.FC = () => {
             <p className="mb-3">
               <strong>Important note:</strong> FIDE ratings are calculated monthly, and all games within a rating 
               period are considered together. This estimator calculates based on individual games which may differ 
-              from FIDE's batch processing approach.
+              from FIDE&apos;s batch processing approach.
             </p>
             
             <p className="mb-3">
-              For official ratings, always refer to FIDE's official website and publications. 
+              For official ratings, always refer to FIDE&apos;s official website and publications. 
               This tool does not replace official ratings issued by FIDE.
             </p>
             

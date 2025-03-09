@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Calculator, Link as LinkIcon, Twitter, Info, X } from 'lucide-react';
+import { Calculator, Link as LinkIcon, Twitter, Info } from 'lucide-react';
 import { calculateUsChessRating } from '@/lib/usChessRatingCalculator';
 import { RatingResult } from '@/lib/ratingTypes';
 import InfoContent from '../shared/InfoContent';
@@ -344,9 +344,6 @@ const UsChessEstimator: React.FC = () => {
     
   //   // ... rest of calculation logic ...
   // };
-  
-  // Add this state at the beginning of your component:
-  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
   
   return (
     <div className="shadow-sm border border-gray-200 rounded-lg overflow-hidden">
@@ -848,7 +845,7 @@ const UsChessEstimator: React.FC = () => {
             </p>
             
             <p className="mb-3">
-              For official ratings, always refer to US Chess's official website and publications. 
+              For official ratings, always refer to US Chess&apos;s official website and publications. 
               This tool does not replace official ratings issued by US Chess.
             </p>
             
