@@ -9,7 +9,8 @@ import RatingChangeVisual from '../shared/RatingChangeVisual';
 import RatingResultsTable from '../shared/RatingResultsTable';
 import OpponentList, { OpponentData as SharedOpponentData } from '../shared/OpponentList';
 import Tooltip from '../shared/Tooltip';
-import DisclaimerComponent from '@/components/common/DisclaimerComponent';
+import DisclaimerModal from '@/components/client/DisclaimerModal';
+import { useSearchParams } from 'next/navigation';
 
 // Add utility function to generate random ID if it doesn't exist elsewhere
 const generateId = () => {
@@ -61,110 +62,122 @@ const UsChessEstimator: React.FC = () => {
     };
   }, [ageDropdownRef]);
   
-  // Auto-calculate from URL parameters
+  // Add useSearchParams hook
+  const searchParams = useSearchParams();
+  
+  // Process URL parameters on component mount
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const searchParams = new URLSearchParams(window.location.search);
-      
-      // Extract all URL parameters at the beginning
-      const currentParam = searchParams.get('current');
-      const priorParam = searchParams.get('prior');
-      const ageParam = searchParams.get('age');
+    // Only run this on client-side
+    if (typeof window === 'undefined') return;
+    
+    try {
+      // Get parameters from URL
+      const current = searchParams.get('current');
       const oppParam = searchParams.get('opp');
       const resultsParam = searchParams.get('results');
-      const highestParam = searchParams.get('highest');
-      const fideRatingParam = searchParams.get('fide');
-      const cfcRatingParam = searchParams.get('cfc');
-      const bonusParam = searchParams.get('bonus');
+      const prior = searchParams.get('prior');
+      const ageParam = searchParams.get('age');
+      const bonus = searchParams.get('bonus');
+      const highest = searchParams.get('highest');
+      const fideParam = searchParams.get('fide');
+      const cfcParam = searchParams.get('cfc');
+      const lifeMaster = searchParams.get('lifemaster');
+      const uscfIdParam = searchParams.get('id');
       
-      // Set state values from parameters
-      if (currentParam) setCurrentRating(currentParam);
-      if (priorParam) setPriorGames(priorParam);
-      if (ageParam) setAge(ageParam);
+      // Only proceed if we have the essential parameters
+      if (!current || !oppParam || !resultsParam) return;
       
-      // Process opponent ratings if available
-      if (oppParam) {
-        const ratingsArray = oppParam.split(',').map(r => r.trim());
-        let resultsArray: ('win' | 'loss' | 'draw')[] = Array(ratingsArray.length).fill('win');
+      // Create an object to hold all updates
+      const updates: any = {};
+      
+      // Prepare all updates without applying them yet
+      if (current) updates.currentRating = current;
+      if (prior) updates.priorGames = prior;
+      if (uscfIdParam) updates.uscfId = uscfIdParam;
+      if (highest) updates.highestRating = highest;
+      if (ageParam) updates.age = ageParam;
+      if (bonus) updates.applyBonus = bonus.toLowerCase() === 'true';
+      if (fideParam) updates.fideRating = fideParam;
+      if (cfcParam) updates.cfcRating = cfcParam;
+      if (lifeMaster) updates.isLifeMaster = lifeMaster.toLowerCase() === 'true';
+      
+      // Process opponent ratings and results
+      if (oppParam && resultsParam) {
+        const oppRatings = oppParam.split(',');
+        const results = resultsParam.split(',');
         
-        // Parse results if available
-        if (resultsParam) {
-          resultsArray = resultsParam.split(',').map(r => {
-            const trimmed = r.trim().toLowerCase();
-            if (trimmed === 'loss' || trimmed === 'l') return 'loss' as const;
-            if (trimmed === 'draw' || trimmed === 'd') return 'draw' as const;
-            return 'win' as const; // Default to win
+        // Create opponents array from URL parameters
+        const newOpponents = [];
+        for (let i = 0; i < Math.min(oppRatings.length, results.length); i++) {
+          newOpponents.push({
+            rating: oppRatings[i],
+            result: results[i] as 'win' | 'loss' | 'draw',
+            id: generateId()
           });
         }
         
-        // Create formatted opponents array
-        const formattedOpponents = ratingsArray.map((rating: string, index: number) => ({
-          rating,
-          result: (resultsArray[index] || 'win') as 'win' | 'loss' | 'draw',
-          id: generateId()
-        }));
-        
-        setOpponents(formattedOpponents);
+        // Add opponents to updates if we have valid data
+        if (newOpponents.length > 0) {
+          updates.opponents = newOpponents;
+        }
       }
       
-      // Auto-calculate if all needed data is available
-      if (currentParam && priorParam && ageParam && oppParam && resultsParam && 
-          highestParam && fideRatingParam && cfcRatingParam && bonusParam) {
-        setTimeout(() => {
-          const currentRatingValue = parseInt(currentParam);
-          const playerPriorGamesNum = parseInt(priorParam);
-          const ageValue = parseInt(ageParam);
+      // Apply all updates at once
+      setCurrentRating(updates.currentRating || '');
+      setPriorGames(updates.priorGames || '');
+      setUscfId(updates.uscfId || '');
+      setHighestRating(updates.highestRating || '');
+      setAge(updates.age || '');
+      setApplyBonus(updates.applyBonus !== undefined ? updates.applyBonus : true);
+      setFideRating(updates.fideRating || '');
+      setCfcRating(updates.cfcRating || '');
+      setIsLifeMaster(updates.isLifeMaster || false);
+      if (updates.opponents) setOpponents(updates.opponents);
+      
+      // Wait for state updates to complete, then calculate
+      const hasRequiredFields = 
+        updates.currentRating && 
+        updates.opponents && 
+        updates.opponents.length > 0;
+      
+      if (hasRequiredFields) {
+        // Use a ref to track if we've already calculated
+        const timer = setTimeout(() => {
+          // Manually calculate with the values we know are correct
+          const playerRating = parseInt(updates.currentRating);
+          const priorGames = parseInt(updates.priorGames || '0');
           
-          // Define ratingsArray again in this scope
-          const ratingsArray = oppParam.split(',').map(r => r.trim());
-          
-          const resultsArray = resultsParam.split(',').map(r => {
-            const trimmed = r.trim().toLowerCase();
-            if (trimmed === 'loss' || trimmed === 'l') return 'loss' as const;
-            if (trimmed === 'draw' || trimmed === 'd') return 'draw' as const;
-            return 'win' as const; // Default to win
-          });
-          
-          const formattedOpponents = ratingsArray.map((rating: string, index: number) => ({
-            rating,
-            result: (resultsArray[index] || 'win') as 'win' | 'loss' | 'draw',
-            id: generateId()
-          }));
-          
-          setOpponents(formattedOpponents);
-          
-          if (!isNaN(currentRatingValue) && !isNaN(playerPriorGamesNum) && !isNaN(ageValue) && formattedOpponents.length > 0) {
-            const transformedData = formattedOpponents.map((opp: SharedOpponentData) => ({
+          if (!isNaN(playerRating)) {
+            // Create calculation inputs directly from our updates object
+            const gameResults = updates.opponents.map((opp: any) => ({
               opponentRating: parseInt(opp.rating),
               result: opp.result === 'win' ? 1 : opp.result === 'draw' ? 0.5 : 0
             }));
             
+            // Calculate directly using our parameters
             const calculationResult = calculateUsChessRating(
-              currentRatingValue,
-              playerPriorGamesNum,
-              transformedData,
-              applyBonus,
-              highestRating ? parseInt(highestRating) : currentRatingValue,
-              ageValue,
-              fideRating ? parseInt(fideRating) : 0,
-              cfcRating ? parseInt(cfcRating) : 0,
-              isLifeMaster  // Pass the isLifeMaster value from state
+              playerRating,
+              priorGames,
+              gameResults,
+              updates.applyBonus !== undefined ? updates.applyBonus : true,
+              updates.highestRating ? parseInt(updates.highestRating) : playerRating,
+              updates.age ? parseInt(updates.age) : 0,
+              updates.fideRating ? parseInt(updates.fideRating) : 0,
+              updates.cfcRating ? parseInt(updates.cfcRating) : 0,
+              updates.isLifeMaster || false
             );
             
+            // Set the results directly
             setResults(calculationResult);
           }
-        }, 100); // Slightly longer timeout to ensure state updates
+        }, 500);
+        
+        return () => clearTimeout(timer);
       }
+    } catch (error) {
+      console.error("Error processing URL parameters:", error);
     }
-  }, [
-    currentRating,
-    priorGames,
-    applyBonus,
-    cfcRating,
-    fideRating,
-    highestRating,
-    isLifeMaster
-  ]);
+  }, [searchParams]);
   
   // Add these state variables at the top of the component
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -196,9 +209,11 @@ const UsChessEstimator: React.FC = () => {
   
   // Calculate results
   const handleCalculate = (): void => {
-    const playerRating = parseInt(currentRating);
-    if (isNaN(playerRating)) {
-      showErrorMessage("Please enter a valid current rating");
+    setShowError(false); // Reset any previous errors
+    
+    // Validate current rating
+    if (!currentRating || isNaN(parseInt(currentRating))) {
+      showErrorMessage('Please enter a valid current rating');
       return;
     }
     
@@ -222,7 +237,7 @@ const UsChessEstimator: React.FC = () => {
     const playerPriorGamesNum = priorGames ? parseInt(priorGames) : 0;
     
     // Parse highest rating (default to current rating if not provided)
-    const highestRatingValue = highestRating ? parseInt(highestRating) : playerRating;
+    const highestRatingValue = highestRating ? parseInt(highestRating) : parseInt(currentRating);
     
     // Parse numerical values
     const playerAgeValue = age ? parseInt(age) : 0;
@@ -231,7 +246,7 @@ const UsChessEstimator: React.FC = () => {
     
     // Call the updated calculation function with all parameters
     const calculationResult = calculateUsChessRating(
-      playerRating,
+      parseInt(currentRating),
       playerPriorGamesNum,
       gameResults,
       applyBonus,
@@ -265,7 +280,7 @@ const UsChessEstimator: React.FC = () => {
     setFideRating('');
     setCfcRating('');
     setIsLifeMaster(false);
-    setIsAgeDropdownOpen(false);
+    setIsAgeDropdown(false);
     setApplyBonus(true);
   };
   
@@ -346,70 +361,61 @@ const UsChessEstimator: React.FC = () => {
   // };
   
   return (
-    <div className="shadow-sm border border-gray-200 rounded-lg overflow-hidden">
-      {/* Title header - with reduced size and padding */}
-      
-      <div className="text-center pt-6 pb-4 px-4 border-b border-gray-200 bg-white">
-        <h1 className="text-2xl font-bold text-gray-800">US Chess Rating Calculator</h1>
-        <p className="mt-1 text-sm text-gray-600">Estimate your rating change after rated games</p>
+    <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200">
+      {/* Reduce header size */}
+      <div className="border-b border-gray-200">
+        <div className="p-4">
+          <h1 className="text-xl font-bold mb-1 text-gray-800">US Chess Rating Calculator</h1>
+          <p className="text-xs text-gray-600">
+            Estimate your rating change after rated games
+          </p>
+        </div>
       </div>
       
-      {/* Tab navigation - keep existing tab navigation code */}
-      <div className="border-b border-gray-200 bg-white">
-        <nav className="flex">
-          <button
-            onClick={() => setActiveTab("calculator")}
-            className={`px-6 py-3 text-sm flex items-center ${
-              activeTab === "calculator"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            <Calculator size={18} className="mr-2" />
-            Calculator
-          </button>
-          <button
-            onClick={() => setActiveTab("information")}
-            className={`px-6 py-3 text-sm flex items-center ${
-              activeTab === "information"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            <Info size={18} className="mr-2" />
-            Information
-          </button>
-        </nav>
+      {/* Tabs with smaller padding */}
+      <div className="flex border-b border-gray-200">
+        <button
+          className={`px-4 py-2 font-medium text-sm ${
+            activeTab === "calculator" 
+              ? "border-b-2 border-blue-500 text-blue-600" 
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+          onClick={() => setActiveTab("calculator")}
+        >
+          <Calculator className="inline-block w-3 h-3 mr-1" /> Calculator
+        </button>
+        <button
+          className={`px-4 py-2 font-medium text-sm ${
+            activeTab === "info" 
+              ? "border-b-2 border-blue-500 text-blue-600" 
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+          onClick={() => setActiveTab("info")}
+        >
+          <Info className="inline-block w-3 h-3 mr-1" /> Information
+        </button>
       </div>
       
-      {/* Content area - more compact padding */}
-      <div className="px-4 py-3">
+      {/* Main content area with tighter padding */}
+      <div className="p-4">
         {activeTab === "calculator" && (
           <div>
-            {/* Main player info on one line */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 sm:mb-4">
-              {/* Current Rating - with larger touch targets and text */}
+            {/* Make the input fields section more compact */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
               <div>
-                <label className="block text-sm sm:text-xs font-medium text-gray-700 mb-2 sm:mb-1">
-                  Current Rating
-                </label>
-                <input
+                <label className="block text-xs font-medium text-gray-700 mb-1">Current Rating</label>
+                <input 
                   type="text"
                   value={currentRating}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (val === '' || (/^\d+$/.test(val) && parseInt(val) >= 0)) {
-                      setCurrentRating(val);
-                    }
-                  }}
-                  placeholder="Enter current rating"
-                  className="block w-full px-3 py-2 sm:px-2 sm:py-1 text-base sm:text-sm border border-gray-300 sm:border-0 sm:border-b rounded-md sm:rounded-none focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:focus:ring-0"
+                  onChange={(e) => setCurrentRating(e.target.value)}
+                  className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your current rating"
                 />
               </div>
               
               {/* Prior Games */}
               <div>
-                <label className="block text-sm sm:text-xs font-medium text-gray-700 mb-2 sm:mb-1">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Prior Games
                 </label>
                 <input
@@ -422,13 +428,13 @@ const UsChessEstimator: React.FC = () => {
                     }
                   }}
                   placeholder="# of rated games"
-                  className="block w-full px-3 py-2 sm:px-2 sm:py-1 text-base sm:text-sm border border-gray-300 sm:border-0 sm:border-b rounded-md sm:rounded-none focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:focus:ring-0"
+                  className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               
               {/* US Chess ID with link - improved with external link icon */}
               <div>
-                <label className="block text-sm sm:text-xs font-medium text-gray-700 mb-2 sm:mb-1">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   US Chess ID (optional)
                 </label>
                 <div className="relative">
@@ -437,7 +443,7 @@ const UsChessEstimator: React.FC = () => {
                     value={uscfId}
                     onChange={(e) => setUscfId(e.target.value)}
                     placeholder="e.g., 12345678"
-                    className="block w-full px-3 py-2 sm:px-2 sm:py-1 text-base sm:text-sm border border-gray-300 sm:border-0 sm:border-b rounded-md sm:rounded-none pr-16 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:focus:ring-0"
+                    className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
                   />
                   {uscfId && (
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-2">
@@ -459,23 +465,36 @@ const UsChessEstimator: React.FC = () => {
             </div>
             
             {/* Opponent List Component */}
-            <OpponentList
-              opponents={opponents}
-              onAddOpponent={addOpponent}
-              onRemoveOpponent={removeOpponent}
-              onRatingChange={handleOpponentRatingChange}
-              onResultChange={handleOpponentResultChange}
-            />
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <label className="block text-xs font-medium text-gray-700">Opponents</label>
+                <button 
+                  onClick={addOpponent}
+                  className="text-xs flex items-center text-blue-600 hover:text-blue-800"
+                >
+                  Add Opponent
+                </button>
+              </div>
+              <div className="bg-white rounded border border-gray-200 overflow-hidden mb-3">
+                <OpponentList
+                  opponents={opponents}
+                  onAddOpponent={addOpponent}
+                  onRemoveOpponent={removeOpponent}
+                  onRatingChange={handleOpponentRatingChange}
+                  onResultChange={handleOpponentResultChange}
+                />
+              </div>
+            </div>
             
             {/* Additional Options - Improved for mobile */}
-            <div className="mb-6 sm:mb-4">
-              <h3 className="text-base sm:text-sm font-semibold mb-4 sm:mb-3 text-gray-700">Additional Options</h3>
+            <div className="bg-white p-3 rounded border border-gray-200 mb-3">
+              <h3 className="text-xs font-semibold mb-2 text-gray-700">Additional Options</h3>
               
               {/* First row - Highest rating and Age Range */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-3 mb-4 sm:mb-3">
                 {/* Highest Achieved Rating */}
                 <div>
-                  <label className="block text-sm sm:text-xs font-medium text-gray-700 mb-2 sm:mb-1">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Highest Achieved Rating
                   </label>
                   <input
@@ -488,13 +507,13 @@ const UsChessEstimator: React.FC = () => {
                       }
                     }}
                     placeholder="For floor calculation"
-                    className="block w-full px-3 py-2 sm:px-2 sm:py-1 text-base sm:text-sm border border-gray-300 sm:border-0 sm:border-b rounded-md sm:rounded-none focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:focus:ring-0"
+                    className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 
                 {/* Age Range */}
                 <div>
-                  <label className="block text-sm sm:text-xs font-medium text-gray-700 mb-2 sm:mb-1">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Age Range
                   </label>
                   <div className="relative" ref={ageDropdownRef}>
@@ -683,7 +702,7 @@ const UsChessEstimator: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-3">
                 {/* FIDE Rating */}
                 <div>
-                  <label className="block text-sm sm:text-xs font-medium text-gray-700 mb-2 sm:mb-1">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     FIDE Rating (if new player)
                   </label>
                   <input
@@ -696,13 +715,13 @@ const UsChessEstimator: React.FC = () => {
                       }
                     }}
                     placeholder="Optional"
-                    className="block w-full px-3 py-2 sm:px-2 sm:py-1 text-base sm:text-sm border border-gray-300 sm:border-0 sm:border-b rounded-md sm:rounded-none focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:focus:ring-0"
+                    className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 
                 {/* CFC Rating */}
                 <div>
-                  <label className="block text-sm sm:text-xs font-medium text-gray-700 mb-2 sm:mb-1">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     CFC Rating (if new player)
                   </label>
                   <input
@@ -715,7 +734,7 @@ const UsChessEstimator: React.FC = () => {
                       }
                     }}
                     placeholder="Optional"
-                    className="block w-full px-3 py-2 sm:px-2 sm:py-1 text-base sm:text-sm border border-gray-300 sm:border-0 sm:border-b rounded-md sm:rounded-none focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:focus:ring-0"
+                    className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -725,19 +744,19 @@ const UsChessEstimator: React.FC = () => {
               </p>
             </div>
 
-            {/* Action Buttons - better spaced for mobile */}
-            <div className="flex justify-between mt-6 sm:mt-4">
-              <button
+            {/* More compact action buttons */}
+            <div className="flex justify-end gap-2 mt-3">
+              <button 
                 onClick={resetCalculator}
-                className="px-4 py-2 sm:px-3 sm:py-1.5 text-sm sm:text-xs border border-gray-300 rounded bg-white hover:bg-gray-50 text-gray-700"
+                className="px-3 py-1.5 text-sm border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
               >
                 Reset
               </button>
               <button
                 onClick={handleCalculate}
-                className="px-5 py-2 sm:px-4 sm:py-1.5 text-sm sm:text-xs bg-blue-600 hover:bg-blue-700 text-white rounded flex items-center"
+                className="bg-blue-600 text-white py-1.5 px-4 text-sm rounded hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center"
               >
-                <Calculator size={18} className="mr-2 sm:mr-1.5 sm:w-4 sm:h-4" />
+                <Calculator className="w-3 h-3 mr-1.5" />
                 Calculate
               </button>
             </div>
@@ -808,54 +827,19 @@ const UsChessEstimator: React.FC = () => {
           </div>
         )}
         
-        {activeTab === "information" && (
-          <div className="p-4 h-[500px] overflow-auto">
+        {activeTab === "info" && (
+          <div className="max-h-[450px] overflow-auto">
             <InfoContent contentPath="/content/uschess/info.md" />
           </div>
         )}
       </div>
       
-      <DisclaimerComponent
+      {/* More compact disclaimer footer */}
+      <DisclaimerModal
         shortText="This is an estimate only; actual US Chess calculations may vary slightly."
         title="US Chess Rating Calculation Disclaimer"
-        detailedContent={
-          <>
-            <p className="mb-3">
-              The rating calculations provided by this tool are based on the published US Chess Federation 
-              rating formulas and are intended to be used for estimation purposes only.
-            </p>
-            
-            <p className="mb-3">
-              Actual official US Chess ratings may differ due to several factors:
-            </p>
-            
-            <ul className="list-disc pl-5 mb-3 space-y-1">
-              <li>Special rating adjustments applied by US Chess</li>
-              <li>Rounding differences in calculation methods</li>
-              <li>Tournament-specific rules or exceptions</li>
-              <li>Recent changes to the rating formula not yet reflected in this tool</li>
-              <li>Rating floor considerations</li>
-              <li>Provisional rating calculations for new players</li>
-            </ul>
-            
-            <p className="mb-3">
-              <strong>Important note:</strong> We strongly discourage players from using this estimator to decide 
-              whether to withdraw from an event based on their estimated post-event rating. The estimator may 
-              be off by a point or two!
-            </p>
-            
-            <p className="mb-3">
-              For official ratings, always refer to US Chess&apos;s official website and publications. 
-              This tool does not replace official ratings issued by US Chess.
-            </p>
-            
-            <p>
-              The developers of this tool make no guarantees about the accuracy of these estimates 
-              and are not affiliated with or endorsed by the US Chess Federation.
-            </p>
-          </>
-        }
-        className="px-6 py-3 bg-gray-50 border-t border-gray-200"
+        organization="USCF"
+        className="px-4 py-2 bg-gray-50 border-t border-gray-200 text-xs"
       />
 
       {/* Toast notification for errors */}

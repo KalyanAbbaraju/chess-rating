@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}` || 
     'https://chess-companion.example.com'
   ),
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

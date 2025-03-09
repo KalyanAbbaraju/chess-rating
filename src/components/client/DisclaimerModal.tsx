@@ -53,12 +53,16 @@ const DisclaimerModal: React.FC<DisclaimerModalProps> = ({
               </button>
             </div>
             
-            <div 
-              className="p-4 text-gray-700 max-h-[50vh] overflow-y-auto"
-              dangerouslySetInnerHTML={detailsContent ? { __html: detailsContent } : undefined}
-            >
-              {!detailsContent && <p>Loading disclaimer details...</p>}
-            </div>
+            {detailsContent ? (
+              <div 
+                className="p-4 text-gray-700 max-h-[50vh] overflow-y-auto"
+                dangerouslySetInnerHTML={{ __html: detailsContent }}
+              />
+            ) : (
+              <div className="p-4 text-gray-700 max-h-[50vh] overflow-y-auto">
+                <p>Loading disclaimer details...</p>
+              </div>
+            )}
             
             <div className="p-4 border-t bg-gray-50 flex justify-end">
               <button 

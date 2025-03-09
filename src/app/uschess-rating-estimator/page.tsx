@@ -1,21 +1,38 @@
-import React from 'react';
+import { Metadata } from 'next';
 import UsChessEstimator from '@/components/uschess-rating-estimator/UsChessEstimator';
+import DisclaimerContent from '@/components/server/DisclaimerContent';
+import ServerInfoContent from '@/components/server/ServerInfoContent';
 
-export const metadata = {
-  title: 'US Chess Rating Estimator | Chess Companion',
-  description: 'Calculate your US Chess rating changes and performance rating with this free online calculator.',
+export const metadata: Metadata = {
+  title: 'US Chess Rating Calculator | Chess Companion',
+  description: 'Calculate your US Chess rating changes using the official USCF formula. Accurate chess rating estimator for US tournament players.',
+  keywords: 'US Chess rating calculator, USCF rating estimator, chess rating change, post-tournament rating, chess rating formula',
+  openGraph: {
+    title: 'US Chess Rating Calculator',
+    description: 'Calculate your expected US Chess rating changes based on tournament performance.',
+    type: 'website',
+    images: [
+      {
+        url: '/images/uschess-calculator-og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'US Chess Rating Calculator'
+      }
+    ]
+  }
 };
 
-export default function USChessRatingEstimatorPage() {
+export default function UsChessRatingEstimatorPage() {
   return (
-    <div className="container mx-auto py-6 px-4 max-w-4xl">
-      { /*
-      <h1 className="text-3xl font-bold mb-2">US Chess Rating Estimator</h1>
-      <p className="text-gray-600 mb-6">
-        This calculator uses the US Chess rating formulas in effect since June 1, 2017, when the bonus threshold was raised from 12 to 14.
-      </p>
-      */}
+    <>
+      {/* Server-rendered disclaimer content (hidden but accessible to search engines) */}
+      <DisclaimerContent organization="USCF" />
+      
+      {/* Pre-render info content (hidden but accessible to search engines) */}
+      <ServerInfoContent contentPath="/content/uschess/info.md" />
+      
+      {/* Client-side interactive calculator */}
       <UsChessEstimator />
-    </div>
+    </>
   );
 }

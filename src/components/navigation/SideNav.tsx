@@ -3,114 +3,93 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronLeft, Calculator, BarChart2, Home, Menu, Mail } from 'lucide-react';
+import { Menu, ChevronLeft, Home, Calculator, BarChart2, Info, Mail } from 'lucide-react';
+import { GiChessKnight } from 'react-icons/gi';
+
+// Navigation items with icons directly included
+const navItems = [
+  { name: 'Home', href: '/', icon: Home },
+  { name: 'US Chess Rating Estimator', href: '/uschess-rating-estimator', icon: Calculator },
+  { name: 'FIDE Rating Estimator', href: '/fide-rating-estimator', icon: BarChart2 },
+  { name: 'About', href: '/about', icon: Info },
+  { name: 'Contact', href: '/contact', icon: Mail },
+];
 
 export default function SideNav() {
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   
   // Close sidebar when route changes
   useEffect(() => {
-    setShowSidebar(false);
+    setIsOpen(false);
   }, [pathname]);
-  
-  const isActive = (path: string) => pathname === path;
   
   return (
     <>
-      {/* Toggle button - always visible */}
-      <div className="fixed top-0 left-0 z-20 m-2">
-        <button 
-          onClick={() => setShowSidebar(true)}
-          className="btn btn-square btn-ghost"
+      {/* Hamburger Button - only visible when sidebar is closed */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed top-4 left-4 z-30 p-2 rounded-md bg-white shadow-sm hover:bg-gray-50 transition-colors"
+          aria-label="Open navigation"
         >
-          <Menu size={20} />
+          <Menu size={24} className="text-gray-700" />
         </button>
-      </div>
-      
-      {/* Overlay - appears when sidebar is open */}
-      {showSidebar && (
-        <div 
-          className="fixed inset-0 bg-black/10 z-30" 
-          onClick={() => setShowSidebar(false)} 
-        />
       )}
       
-      {/* Sidebar - fixed positioning so it doesn't affect content flow */}
+      {/* Remove overlay completely to keep main content visible */}
+      
+      {/* Sidebar - floating on all screen sizes */}
       <aside 
-        className={`fixed top-0 left-0 h-full w-64 bg-white text-gray-800 z-40 transition-transform duration-300 shadow-lg ${
-          showSidebar ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        } fixed top-0 left-0 h-full w-64 bg-white shadow-sm z-20 transition-transform duration-300 ease-in-out flex flex-col border-r border-gray-200`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <Link href="/" className="font-bold text-lg flex items-center text-gray-800">
-            <span className="mr-2 text-blue-600">♞</span>
-            Chess Companion
+        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+          <Link href="/" className="flex items-center">
+            <GiChessKnight className="text-blue-600 w-8 h-8" />
+            <span className="ml-2 text-xl font-semibold text-gray-800">Chess Companion</span>
           </Link>
+          
+          {/* Minimize button */}
           <button 
-            onClick={() => setShowSidebar(false)}
-            className="btn btn-sm btn-ghost btn-square text-gray-800"
+            onClick={() => setIsOpen(false)}
+            className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+            aria-label="Close navigation"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={20} />
           </button>
         </div>
         
-        <nav className="h-full overflow-y-auto py-4">
-          <ul className="space-y-1 px-3">
-            <li>
-              <Link 
-                href="/" 
-                className={`flex items-center px-3 py-2 rounded-md transition-colors ${
-                  isActive('/') 
-                    ? 'bg-blue-50 text-blue-600 font-medium' 
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Home size={18} className="mr-3 flex-shrink-0" />
-                <span>Home</span>
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/uschess-rating-estimator" 
-                className={`flex items-center px-3 py-2 rounded-md transition-colors ${
-                  isActive('/uschess-rating-estimator') 
-                    ? 'bg-blue-50 text-blue-600 font-medium' 
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Calculator size={18} className="mr-3 flex-shrink-0" />
-                <span>US Chess Rating Estimator</span>
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/fide-rating-estimator" 
-                className={`flex items-center px-3 py-2 rounded-md transition-colors ${
-                  isActive('/fide-rating-estimator') 
-                    ? 'bg-blue-50 text-blue-600 font-medium' 
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <BarChart2 size={18} className="mr-3 flex-shrink-0" />
-                <span>FIDE Rating Estimator</span>
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/contact" 
-                className={`flex items-center px-3 py-2 rounded-md transition-colors ${
-                  isActive('/contact') 
-                    ? 'bg-blue-50 text-blue-600 font-medium' 
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Mail size={18} className="mr-3 flex-shrink-0" />
-                <span>Contact Us</span>
-              </Link>
-            </li>
+        <nav className="flex-1 p-4 overflow-y-auto">
+          <ul className="space-y-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+              
+              return (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    className={`flex items-center px-4 py-2.5 rounded-md transition-colors ${
+                      isActive 
+                        ? 'bg-blue-50 text-blue-600 font-medium' 
+                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                    }`}
+                  >
+                    <Icon size={18} className={isActive ? 'text-blue-600' : 'text-gray-500'} />
+                    <span className="ml-3">{item.name}</span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
+
+        <div className="p-4 border-t border-gray-200 text-xs text-gray-500">
+          <p>© {new Date().getFullYear()} Chess Companion</p>
+          <p>All rights reserved.</p>
+        </div>
       </aside>
     </>
   );

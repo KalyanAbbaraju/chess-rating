@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import FideEstimator from '@/components/fide-rating-estimator/FideEstimator';
 import DisclaimerContent from '@/components/server/DisclaimerContent';
+import ServerInfoContent from '@/components/server/ServerInfoContent';
 
 export const metadata: Metadata = {
   title: 'FIDE Rating Calculator | Chess Companion',
@@ -24,17 +25,11 @@ export const metadata: Metadata = {
 export default function FideRatingEstimatorPage() {
   return (
     <>
-      {/* Server-rendered content for SEO */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">FIDE Rating Calculator</h1>
-        <p className="text-gray-600">
-          Calculate your expected FIDE rating changes based on your game results using the official FIDE Elo formula.
-          This estimator helps chess players predict their new rating after tournaments or rated games.
-        </p>
-      </div>
-      
       {/* Server-rendered disclaimer content */}
       <DisclaimerContent organization="FIDE" />
+      
+      {/* Pre-render the informational content */}
+      <ServerInfoContent contentPath="/content/fide/info.md" />
       
       {/* Client-side interactive calculator */}
       <FideEstimator />
