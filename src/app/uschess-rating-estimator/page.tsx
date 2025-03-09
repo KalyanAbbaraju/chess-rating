@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
-import UsChessEstimator from '@/components/uschess-rating-estimator/UsChessEstimator';
 import DisclaimerContent from '@/components/server/DisclaimerContent';
 import ServerInfoContent from '@/components/server/ServerInfoContent';
+import ClientWrapper from './client-wrapper';
 
 export const metadata: Metadata = {
   title: 'US Chess Rating Calculator | Chess Companion',
@@ -25,14 +25,12 @@ export const metadata: Metadata = {
 export default function UsChessRatingEstimatorPage() {
   return (
     <>
-      {/* Server-rendered disclaimer content (hidden but accessible to search engines) */}
+      {/* Server components */}
       <DisclaimerContent organization="USCF" />
-      
-      {/* Pre-render info content (hidden but accessible to search engines) */}
       <ServerInfoContent contentPath="/content/uschess/info.md" />
       
-      {/* Client-side interactive calculator */}
-      <UsChessEstimator />
+      {/* Client wrapper */}
+      <ClientWrapper />
     </>
   );
 }
