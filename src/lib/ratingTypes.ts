@@ -8,7 +8,7 @@ export interface RatingCalculationResult {
   totalGames: number;
   kFactor: number;
   bonus: number;
-  actualScore?: number;
+  actualScore: number;
 
 }
 
@@ -35,7 +35,9 @@ export interface UsChessRatingResult extends BaseRatingResult {
   linearPerformanceRating?: number;
   algorithm400PerformanceRating?: number;
   ratingWithoutFloor?: number;
+  currentFloor: number;
   expectedScore: number;
+  ratingCategory: string;
 }
 
 // FIDE specific extensions

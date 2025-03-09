@@ -157,13 +157,14 @@ export function calculateUsChessRating(
   
   // Calculate rating floor based on highest achieved rating
   let finalRating = newRating;
+  let currentFloor = 0;
   if (highestAchievedRating) {
     // Determine if player is a senior based on age
     const isSenior = playerAge >= 65;
     
     // Pass the actual isLifeMaster value from parameter
-    const ratingFloor = calculateRatingFloor(highestAchievedRating, isLifeMaster, isSenior);
-    finalRating = applyRatingFloor(newRating, ratingFloor);
+    currentFloor = calculateRatingFloor(highestAchievedRating, isLifeMaster, isSenior);
+    finalRating = applyRatingFloor(newRating, currentFloor);
   }
 
   // Calculate performance rating based on selected method
@@ -178,6 +179,8 @@ export function calculateUsChessRating(
     algorithm400PerformanceRating = calculateAlgorithm400PerformanceRating(gameResults);
   }
 
+  const ratingCategory = getRatingCategory(currentRating);
+
   const results: UsChessRatingResult = {
     currentRating: currentRating,
     newRating: Math.round(finalRating),
@@ -191,9 +194,11 @@ export function calculateUsChessRating(
     linearPerformanceRating: Math.round(linearPerformanceRating),
     algorithm400PerformanceRating: Math.round(algorithm400PerformanceRating),
     ratingWithoutFloor: newRating,
+    currentFloor: currentFloor,
     expectedScore: Math.round(expectedScore * 100) / 100,
     isProvisional: isProvisional,
-    type: 'uschess'
+    type: 'uschess',
+    ratingCategory: ratingCategory
   }
   
   // Return detailed result
@@ -448,4 +453,18 @@ export function initializeRating(options: InitializeRatingOptions): number {
   
   // Default initial rating
   return 1300;
+}
+
+/**
+* Get the rating category for a given rating
+* 
+* @param rating - Player's rating
+* @returns Rating category
+*/
+export function getRatingCategory(rating: number): string {
+  if (rating >= 2400) return 'Master';
+  if (rating >= 2200) return 'Expert';
+  if (rating >= 2000) return 'Class A';
+  if (rating >= 1800) return 'Class B';
+  return 'Class C';
 }

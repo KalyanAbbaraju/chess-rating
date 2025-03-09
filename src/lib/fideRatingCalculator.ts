@@ -43,12 +43,12 @@ export function calculateFIDERating(
   // Calculate K-factor
   if (isProvisional) {
     // Provisional players do not have a published rating yet
-    return {
+    const provisionalResults: FideRatingResult = {
       currentRating: currentRating,
       newRating: 0,
       ratingChange: 0,
       baseRatingChange: 0,
-      actualScore: 0,
+      actualScore: actualScore,
       expectedScore: Math.round(expectedScore * 100) / 100,
       totalGames: numPreviousGames + gameResults.length,
       kFactor: 40,
@@ -56,7 +56,8 @@ export function calculateFIDERating(
       isProvisional: isProvisional,
       type: 'fide',
       classification: 'Provisional'
-    };
+    }
+    return provisionalResults;
   } else if (isNewPlayer) {
     kFactor = 40;
   } else {

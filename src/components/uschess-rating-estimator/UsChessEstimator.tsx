@@ -423,35 +423,42 @@ const UsChessEstimator: React.FC = () => {
   // };
   
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden max-w-3xl mx-auto">
-      {/* Tabs - make tabs more compact */}
-      <div className="flex border-b border-gray-200 bg-gray-50">
-        <button
-          onClick={() => setActiveTab("calculator")}
-          className={`px-4 py-2 text-sm font-medium ${
-            activeTab === "calculator"
-              ? "text-blue-600 border-b-2 border-blue-500 bg-white"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          <Calculator size={16} className="inline mr-1.5" />
-          Calculator
-        </button>
-        <button
-          onClick={() => setActiveTab("information")}
-          className={`px-4 py-2 text-sm font-medium ${
-            activeTab === "information"
-              ? "text-blue-600 border-b-2 border-blue-500 bg-white"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Info
-        </button>
+    <div className="shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+      {/* Title header - with reduced size and padding */}
+      
+      <div className="text-center pt-6 pb-4 px-4 border-b border-gray-200 bg-white">
+        <h1 className="text-2xl font-bold text-gray-800">US Chess Rating Calculator</h1>
+        <p className="mt-1 text-sm text-gray-600">Estimate your rating change after rated games</p>
       </div>
-
+      
+      {/* Tab navigation - keep existing tab navigation code */}
+      <div className="border-b border-gray-200 bg-white">
+        <nav className="flex">
+          <button
+            onClick={() => setActiveTab("calculator")}
+            className={`px-6 py-3 text-sm flex items-center ${
+              activeTab === "calculator"
+                ? "border-b-2 border-blue-500 text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            <Calculator size={18} className="mr-2" />
+            Calculator
+          </button>
+          <button
+            onClick={() => setActiveTab("information")}
+            className={`px-6 py-3 text-sm flex items-center ${
+              activeTab === "information"
+                ? "border-b-2 border-blue-500 text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            <Info size={18} className="mr-2" />
+            Information
+          </button>
+        </nav>
+      </div>
+      
       {/* Content area - more compact padding */}
       <div className="px-4 py-3">
         {activeTab === "calculator" && (

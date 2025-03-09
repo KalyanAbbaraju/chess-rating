@@ -1,5 +1,5 @@
 import React from 'react';
-import { RatingResult } from '@/lib/ratingTypes';
+import { RatingResult, UsChessRatingResult, FideRatingResult } from '@/lib/ratingTypes';
 import { 
   ArrowUp, 
   ArrowDown, 
@@ -24,6 +24,7 @@ interface RatingChangeVisualProps {
 const RatingChangeVisual: React.FC<RatingChangeVisualProps> = ({ results }) => {
   if (!results) return null;
 
+  // Get common properties
   const { 
     currentRating, 
     newRating, 
@@ -33,8 +34,18 @@ const RatingChangeVisual: React.FC<RatingChangeVisualProps> = ({ results }) => {
     expectedScore,
     actualScore,
     totalGames,
-    bonus
   } = results;
+  
+  // Get system-specific properties using type guard
+  const bonus = results.type === 'uschess' ? results.bonus : 0;
+  const currentFloor = results.type === 'uschess' ? results.currentFloor : 0;
+  const classification = results.type === 'fide' ? results.classification : 'NA';
+  const dynamicKFactor = results.type === 'fide' ? results.dynamicKFactor : null;
+
+  // Get performance rating (different property names in each system)
+  const performanceRating = results.type === 'uschess' 
+    ? results.fidePerformanceRating || 0
+    : results.performanceRating;
 
   // Common variables for both rating systems
   const isPositiveChange = ratingChange > 0;
@@ -46,7 +57,7 @@ const RatingChangeVisual: React.FC<RatingChangeVisualProps> = ({ results }) => {
   const formattedRatingChange = isPositiveChange ? `+${ratingChange}` : `${ratingChange}`;
   
   // For the score badge
-  const scoreDifference = actualScore - expectedScore;
+  const scoreDifference = actualScore ? actualScore - expectedScore : 0;
   
   // Define thresholds for performance badges
   const highThreshold = 0.5; // 50% better than expected
@@ -114,7 +125,7 @@ const RatingChangeVisual: React.FC<RatingChangeVisualProps> = ({ results }) => {
             <div className="font-bold">{performanceBadge.text}</div>
           </div>
           <div className="text-sm flex items-center space-x-4">
-            <span>Score: <strong>{actualScore.toFixed(1)}</strong> vs <strong>{expectedScore.toFixed(2)}</strong></span>
+            <span>Score: <strong>{actualScore ? actualScore.toFixed(1) : 'N/A'}</strong> vs <strong>{expectedScore.toFixed(2)}</strong></span>
             <span className={scoreDifference >= 0 ? 'text-green-600' : 'text-red-600'}>
               Diff: <strong>{scoreDifference >= 0 ? '+' : ''}{scoreDifference.toFixed(2)}</strong>
             </span>
@@ -200,11 +211,11 @@ const RatingChangeVisual: React.FC<RatingChangeVisualProps> = ({ results }) => {
       {/* Stats grid - simplified with Performance Rating */}
       <div className="mb-4">
         <div className="grid grid-cols-3 gap-3">
-          {/* Performance Rating (replaces Your Score) */}
+          {/* Performance Rating */}
           <div className="bg-blue-50 p-3 rounded-md text-center border border-blue-100">
             <div className="text-xs text-gray-600 mb-1">Performance Rating</div>
             <div className="text-lg font-bold">
-              {'fidePerformanceRating' in results ? results.fidePerformanceRating : 'N/A'}
+              {performanceRating || 'N/A'}
             </div>
           </div>
           
@@ -214,11 +225,18 @@ const RatingChangeVisual: React.FC<RatingChangeVisualProps> = ({ results }) => {
             <div className="text-lg font-bold">{kFactor}</div>
           </div>
           
-          {/* Total Games */}
-          <div className="bg-blue-50 p-3 rounded-md text-center border border-blue-100">
-            <div className="text-xs text-gray-600 mb-1">Total Games</div>
-            <div className="text-lg font-bold">{totalGames || 'N/A'}</div>
-          </div>
+          {/* System-specific third stat */}
+          {results.type === 'uschess' ? (
+            <div className="bg-blue-50 p-3 rounded-md text-center border border-blue-100">
+              <div className="text-xs text-gray-600 mb-1">Current Floor</div>
+              <div className="text-lg font-bold">{currentFloor || 'N/A'}</div>
+            </div>
+          ) : (
+            <div className="bg-blue-50 p-3 rounded-md text-center border border-blue-100">
+              <div className="text-xs text-gray-600 mb-1">Classification</div>
+              <div className="text-lg font-bold">{classification || 'N/A'}</div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState, useRef, KeyboardEvent, useEffect } from 'react';
-import { Facebook, Twitter, Calculator, Link as LinkIcon, Plus, Trash2 } from 'lucide-react';
+import { Facebook, Twitter, Calculator, Link as LinkIcon, Plus, Trash2, Info } from 'lucide-react';
 import { calculateFIDERating } from '@/lib/fideRatingCalculator';
 import { RatingResult } from '@/lib/ratingTypes';
 import RatingChangeVisual from '../shared/RatingChangeVisual';
 import RatingResultsTable from '../shared/RatingResultsTable';
 import InfoContent from '../shared/InfoContent';
 import OpponentList, { OpponentData } from '../shared/OpponentList';
+import Tooltip from '../shared/Tooltip';
 
 // Add utility function to generate random ID if it doesn't exist elsewhere
 const generateId = () => {
@@ -29,6 +30,21 @@ const FideEstimator: React.FC = () => {
   const [visualizationType, setVisualizationType] = useState<'visual' | 'table'>('visual');
   const [kFactor, setKFactor] = useState<string>('20');
   const [previousGames, setPreviousGames] = useState<string>('0');
+  
+  // Error toast notification state
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [showError, setShowError] = useState<boolean>(false);
+  
+  // Add this function to show errors
+  const showErrorMessage = (message: string) => {
+    setErrorMessage(message);
+    setShowError(true);
+    
+    // Auto-hide the error after 5 seconds
+    setTimeout(() => {
+      setShowError(false);
+    }, 5000);
+  };
   
   // Refs for keyboard navigation
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -55,12 +71,12 @@ const FideEstimator: React.FC = () => {
       const resultsParam = searchParams.get('results');
       
       if (oppParam) {
-        const ratings = oppParam.split(',').map(r => r.trim());
-        let results: ('win' | 'loss' | 'draw')[] = Array(ratings.length).fill('win');
+        const ratingsArray = oppParam.split(',').map(r => r.trim());
+        let resultsArray: ('win' | 'loss' | 'draw')[] = Array(ratingsArray.length).fill('win');
         
         // Parse results if available
         if (resultsParam) {
-          results = resultsParam.split(',').map(r => {
+          resultsArray = resultsParam.split(',').map(r => {
             const trimmed = r.trim().toLowerCase();
             if (trimmed === 'loss' || trimmed === 'l') return 'loss';
             if (trimmed === 'draw' || trimmed === 'd') return 'draw';
@@ -69,16 +85,28 @@ const FideEstimator: React.FC = () => {
         }
         
         // Create formatted opponents array
-        const formattedOpponents = ratings.map((rating, index) => ({
+        const formattedOpponents = ratingsArray.map((rating: string, index: number) => ({
           rating,
-          result: results[index] || 'win',
+          result: resultsArray[index] || 'win',
           id: generateId()
         }));
         
         setOpponents(formattedOpponents);
+
+        // Get previous games parameter
+        const previousGamesParam = searchParams.get('previousGames');
+        if (previousGamesParam) {
+          setPreviousGames(previousGamesParam);
+        }
+        
+        // Get FIDE ID parameter
+        const fideIdParam = searchParams.get('fideId');
+        if (fideIdParam) {
+          setFideId(fideIdParam);
+        }
         
         // Auto-calculate if we have current rating and opponents
-        if (currentParam && ratings.length > 0) {
+        if (currentParam && ratingsArray.length > 0) {
           setTimeout(() => {
             const currentRatingValue = parseInt(currentParam);
             if (!isNaN(currentRatingValue)) {
@@ -95,9 +123,11 @@ const FideEstimator: React.FC = () => {
                 const kFactorValue = kFactorParam ? parseInt(kFactorParam) : 20;
                 
                 // Call calculation function for FIDE ratings
+                const previousGamesNum = parseInt(previousGames) || 0;
+                
                 const calculationResult = calculateFIDERating(
                   currentRatingValue,
-                  0, // numPreviousGames - You might want to add this as a field in your form
+                  previousGamesNum,
                   gameResults
                 );
                 
@@ -107,6 +137,7 @@ const FideEstimator: React.FC = () => {
           }, 100); // Slightly longer timeout to ensure state updates
         }
       }
+      
     }
   }, []);
   
@@ -141,7 +172,7 @@ const FideEstimator: React.FC = () => {
   const handleCalculate = (): void => {
     const playerRating = parseInt(currentRating);
     if (isNaN(playerRating)) {
-      alert("Please enter a valid current rating");
+      showErrorMessage("Please enter a valid current rating");
       return;
     }
     
@@ -151,7 +182,7 @@ const FideEstimator: React.FC = () => {
     );
     
     if (validOpponents.length === 0) {
-      alert("Please enter at least one valid opponent rating");
+      showErrorMessage("Please enter at least one valid opponent rating");
       return;
     }
     
@@ -162,12 +193,12 @@ const FideEstimator: React.FC = () => {
     }));
     
     // Parse number of previous games
-    const priorGamesNum = previousGames ? parseInt(previousGames) : 0;
+    const previousGamesNum = parseInt(previousGames) || 0;
     
     // Call the updated calculation function with all parameters
     const calculationResult = calculateFIDERating(
       playerRating,
-      priorGamesNum,
+      previousGamesNum,
       gameResults
     );
     
@@ -184,25 +215,39 @@ const FideEstimator: React.FC = () => {
     ]);
     setCurrentRating('');
     setFideId('');
+    setPreviousGames('0');
+    setKFactor('20');
     setResults(null);
+    setCopySuccess('');
   };
   
   // Sharing functionality
   const buildShareURL = (): string => {
-    const url = new URL(window.location.href);
-    url.search = '';
-    
+    const baseURL = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
     const params = new URLSearchParams();
     
+    // Add current rating
     if (currentRating) params.append('current', currentRating);
     
+    // Add previous games
+    if (previousGames) params.append('previousGames', previousGames);
+    
+    // Add FIDE ID
+    if (fideId) params.append('fideId', fideId);
+    
+    // Add K-factor
+    if (kFactor) params.append('kfactor', kFactor);
+    
+    // Add opponents
     const validOpponents = opponents.filter(o => o.rating !== '');
     if (validOpponents.length > 0) {
-      params.append('opp', validOpponents.map(o => o.rating).join(','));
+      const ratings = validOpponents.map(o => o.rating).join(',');
+      const results = validOpponents.map(o => o.result).join(',');
+      params.append('opp', ratings);
+      params.append('results', results);
     }
     
-    url.search = params.toString();
-    return url.toString();
+    return `${baseURL}?${params.toString()}`;
   };
   
   const copyLinkToClipboard = (): void => {
@@ -268,25 +313,30 @@ const FideEstimator: React.FC = () => {
             
             {/* Player Information Section */}
             <div className="mb-4">
-              <h3 className="text-sm font-semibold mb-3 text-gray-700">Player Information</h3>
+              <h3 className="text-base sm:text-sm font-semibold mb-3 text-gray-700">Player Information</h3>
               
               {/* Current rating and previous games in a row */}
-              <div className="flex gap-4 mb-3">
-                <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+                <div>
+                  <label className="block text-sm sm:text-xs font-medium text-gray-700 mb-2 sm:mb-1">
                     Current Rating
                   </label>
                   <input
                     type="text"
                     value={currentRating}
-                    onChange={(e) => setCurrentRating(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '' || (/^\d+$/.test(val) && parseInt(val) >= 0)) {
+                        setCurrentRating(val);
+                      }
+                    }}
                     placeholder="Your current rating"
-                    className="block w-full px-2 py-1 text-sm border-0 border-b border-gray-300 focus:border-b focus:border-blue-500 focus:outline-none focus:ring-0"
+                    className="block w-full px-3 py-2 sm:px-2 sm:py-1 text-base sm:text-sm border border-gray-300 sm:border-0 sm:border-b rounded-md sm:rounded-none focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:focus:ring-0"
                   />
                 </div>
                 
-                <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                <div>
+                  <label className="block text-sm sm:text-xs font-medium text-gray-700 mb-2 sm:mb-1">
                     Prior Games
                   </label>
                   <input
@@ -299,21 +349,21 @@ const FideEstimator: React.FC = () => {
                       }
                     }}
                     placeholder="Previous rated games"
-                    className="block w-full px-2 py-1 text-sm border-0 border-b border-gray-300 focus:border-b focus:border-blue-500 focus:outline-none focus:ring-0"
+                    className="block w-full px-3 py-2 sm:px-2 sm:py-1 text-base sm:text-sm border border-gray-300 sm:border-0 sm:border-b rounded-md sm:rounded-none focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:focus:ring-0"
                   />
                 </div>
               </div>
               
               {/* K-Factor and FIDE ID in a row */}
-              <div className="flex gap-4 mb-3">
-                <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+                <div>
+                  <label className="block text-sm sm:text-xs font-medium text-gray-700 mb-2 sm:mb-1">
                     K-Factor
                   </label>
                   <select
                     value={kFactor}
                     onChange={(e) => setKFactor(e.target.value)}
-                    className="block w-full px-2 py-1 text-sm border-0 border-b border-gray-300 focus:border-b focus:border-blue-500 focus:outline-none focus:ring-0 bg-white"
+                    className="block w-full px-3 py-2 sm:px-2 sm:py-1 text-base sm:text-sm border border-gray-300 sm:border-0 sm:border-b rounded-md sm:rounded-none focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:focus:ring-0 bg-white"
                   >
                     <option value="40">40 (New player)</option>
                     <option value="20">20 (Standard)</option>
@@ -321,17 +371,34 @@ const FideEstimator: React.FC = () => {
                   </select>
                 </div>
                 
-                <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                <div>
+                  <label className="block text-sm sm:text-xs font-medium text-gray-700 mb-2 sm:mb-1">
                     FIDE ID (optional)
                   </label>
-                  <input
-                    type="text"
-                    value={fideId}
-                    onChange={(e) => setFideId(e.target.value)}
-                    placeholder="e.g., 12345678"
-                    className="block w-full px-2 py-1 text-sm border-0 border-b border-gray-300 focus:border-b focus:border-blue-500 focus:outline-none focus:ring-0"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={fideId}
+                      onChange={(e) => setFideId(e.target.value)}
+                      placeholder="e.g., 12345678"
+                      className="block w-full px-3 py-2 sm:px-2 sm:py-1 text-base sm:text-sm border border-gray-300 sm:border-0 sm:border-b rounded-md sm:rounded-none pr-16 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:focus:ring-0"
+                    />
+                    {fideId && (
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-2">
+                        <a 
+                          href={`https://ratings.fide.com/profile/${fideId}`}
+                          target="_blank"
+                          rel="noopener noreferrer" 
+                          className="text-gray-500 hover:text-gray-700 p-1"
+                          title="View FIDE profile"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -346,18 +413,18 @@ const FideEstimator: React.FC = () => {
             />
 
             {/* Action Buttons */}
-            <div className="flex justify-between mt-4">
+            <div className="flex justify-between mt-6 sm:mt-4">
               <button
                 onClick={resetCalculator}
-                className="px-3 py-1.5 text-xs border border-gray-300 rounded bg-white hover:bg-gray-50 text-gray-700"
+                className="px-4 py-2 sm:px-3 sm:py-1.5 text-sm sm:text-xs border border-gray-300 rounded bg-white hover:bg-gray-50 text-gray-700"
               >
                 Reset
               </button>
               <button
                 onClick={handleCalculate}
-                className="px-4 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded flex items-center"
+                className="px-5 py-2 sm:px-4 sm:py-1.5 text-sm sm:text-xs bg-blue-600 hover:bg-blue-700 text-white rounded flex items-center"
               >
-                <Calculator size={14} className="mr-1.5" />
+                <Calculator size={18} className="mr-2 sm:mr-1.5 sm:w-4 sm:h-4" />
                 Calculate
               </button>
             </div>
@@ -435,11 +502,40 @@ const FideEstimator: React.FC = () => {
         <span>This is an estimate only; official FIDE calculations may vary.</span>
         <button 
           className="text-xs text-gray-600 hover:text-gray-900"
-          onClick={() => alert("This is an unofficial FIDE rating calculator and should be used for estimation purposes only.")}
+          onClick={() => showErrorMessage("This is an unofficial FIDE rating calculator and should be used for estimation purposes only.")}
         >
           Disclaimer
         </button>
       </div>
+
+      {/* Toast notification for errors */}
+      {showError && (
+        <div className="fixed bottom-4 right-4 sm:max-w-md w-[calc(100%-2rem)] bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md animate-fade-in-right">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-base sm:text-sm">{errorMessage}</p>
+            </div>
+            <div className="ml-auto pl-3">
+              <div className="-mx-1.5 -my-1.5">
+                <button
+                  onClick={() => setShowError(false)}
+                  className="inline-flex rounded-md p-2 sm:p-1.5 text-red-500 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                >
+                  <span className="sr-only">Dismiss</span>
+                  <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
