@@ -18,6 +18,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Chess Companion",
   description: "Your complete chess companion for analysis and improvement",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || 
+    process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}` || 
+    'https://chess-companion.example.com'
+  ),
 };
 
 export default function RootLayout({
