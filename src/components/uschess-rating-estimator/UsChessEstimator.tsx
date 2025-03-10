@@ -465,15 +465,6 @@ const UsChessEstimator: React.FC = () => {
             
             {/* Opponent List Component */}
             <div className="mb-3">
-              <div className="flex justify-between items-center mb-1">
-                <label className="block text-xs font-medium text-gray-700">Opponents</label>
-                <button 
-                  onClick={addOpponent}
-                  className="text-xs flex items-center text-blue-600 hover:text-blue-800"
-                >
-                  Add Opponent
-                </button>
-              </div>
               <div className="bg-white rounded border border-gray-200 overflow-hidden mb-3">
                 <OpponentList
                   opponents={opponents}

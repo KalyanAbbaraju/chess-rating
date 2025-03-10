@@ -41,22 +41,22 @@ const OpponentList: React.FC<OpponentListProps> = ({
   };
 
   return (
-    <div className="mb-3">
-      <div className="flex justify-between items-center mb-1">
+    <div className="rounded-lg border border-gray-200 p-4">
+      <div className="flex justify-between items-center mb-4">
         <label className="block text-xs font-medium text-gray-700">
           Opponents
         </label>
         <button
+          type="button"
           onClick={onAddOpponent}
-          className="p-1 text-xs text-blue-600 hover:text-blue-800 inline-flex items-center"
+          className="text-xs flex items-center text-blue-600 hover:text-blue-800"
         >
-          <Plus size={14} className="mr-1" />
-          Add Opponent
+          <span className="mr-1">+</span> Add Opponent
         </button>
       </div>
       
       <div className="border border-gray-200 rounded-md overflow-hidden bg-gray-50">
-        <div className="max-h-[180px] overflow-y-auto px-2 py-1">
+        <div className="px-2 py-1">
           {opponents.map((opponent, index) => (
             <div key={opponent.id || index} className="flex items-center mb-1.5 last:mb-0">
               <span className="text-xs text-gray-500 w-5">{index + 1}.</span>
