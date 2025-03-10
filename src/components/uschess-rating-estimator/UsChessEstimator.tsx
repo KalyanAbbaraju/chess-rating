@@ -290,8 +290,8 @@ const UsChessEstimator: React.FC<UsChessEstimatorProps> = ({ preloadedResults = 
                   type="text"
                   value={currentRating}
                   onChange={(e) => setCurrentRating(e.target.value)}
-                  className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your current rating"
+                  className="w-full h-9 border-b border-gray-300 px-2 py-1 text-sm focus:outline-none focus:border-blue-500 focus:border-b-2 transition-colors"
                 />
               </div>
               
@@ -310,7 +310,7 @@ const UsChessEstimator: React.FC<UsChessEstimatorProps> = ({ preloadedResults = 
                     }
                   }}
                   placeholder="# of rated games"
-                  className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full h-9 border-b border-gray-300 px-2 py-1 text-sm focus:outline-none focus:border-blue-500 focus:border-b-2 transition-colors"
                 />
               </div>
               
@@ -325,7 +325,7 @@ const UsChessEstimator: React.FC<UsChessEstimatorProps> = ({ preloadedResults = 
                     value={uscfId}
                     onChange={(e) => setUscfId(e.target.value)}
                     placeholder="e.g., 12345678"
-                    className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full h-9 border-b border-gray-300 px-2 py-1 text-sm focus:outline-none focus:border-blue-500 focus:border-b-2 transition-colors"
                   />
                   {uscfId && (
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-2">
@@ -389,7 +389,7 @@ const UsChessEstimator: React.FC<UsChessEstimatorProps> = ({ preloadedResults = 
                       }
                     }}
                     placeholder="For floor calculation"
-                    className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full h-9 border-b border-gray-300 px-2 py-1 text-sm focus:outline-none focus:border-blue-500 focus:border-b-2 transition-colors"
                   />
                 </div>
                 
@@ -597,7 +597,7 @@ const UsChessEstimator: React.FC<UsChessEstimatorProps> = ({ preloadedResults = 
                       }
                     }}
                     placeholder="Optional"
-                    className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full h-9 border-b border-gray-300 px-2 py-1 text-sm focus:outline-none focus:border-blue-500 focus:border-b-2 transition-colors"
                   />
                 </div>
                 
@@ -616,7 +616,7 @@ const UsChessEstimator: React.FC<UsChessEstimatorProps> = ({ preloadedResults = 
                       }
                     }}
                     placeholder="Optional"
-                    className="w-full h-9 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full h-9 border-b border-gray-300 px-2 py-1 text-sm focus:outline-none focus:border-blue-500 focus:border-b-2 transition-colors"
                   />
                 </div>
               </div>
