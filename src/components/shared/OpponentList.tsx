@@ -1,5 +1,5 @@
 import React, { useRef, KeyboardEvent } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 export interface OpponentData {
   id: string;
