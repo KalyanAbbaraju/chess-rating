@@ -10,17 +10,14 @@ import RatingResultsTable from '../shared/RatingResultsTable';
 import OpponentList, { OpponentData as SharedOpponentData } from '../shared/OpponentList';
 import Tooltip from '../shared/Tooltip';
 import DisclaimerModal from '@/components/client/DisclaimerModal';
+import { useSearchParams } from 'next/navigation';
 
 // Add utility function to generate random ID if it doesn't exist elsewhere
 const generateId = () => {
   return Math.random().toString(36).substring(2, 10);
 };
 
-interface UsChessEstimatorProps {
-  preloadedResults?: RatingResult | null;
-}
-
-const UsChessEstimator: React.FC<UsChessEstimatorProps> = ({ preloadedResults = null }) => {
+const UsChessEstimator: React.FC = () => {
   const [opponents, setOpponents] = useState<SharedOpponentData[]>([
     { rating: '', result: 'win', id: generateId() },
     { rating: '', result: 'win', id: generateId() },
@@ -31,7 +28,7 @@ const UsChessEstimator: React.FC<UsChessEstimatorProps> = ({ preloadedResults = 
   const [priorGames, setPriorGames] = useState<string>('');
   const [uscfId, setUscfId] = useState<string>('');
   const [age, setAge] = useState<string>('');
-  const [results, setResults] = useState<RatingResult | null>(preloadedResults);
+  const [results, setResults] = useState<RatingResult | null>(null);
   const [copySuccess, setCopySuccess] = useState<string>('');
   const [activeTab, setActiveTab] = useState<string>("calculator");
   const [visualizationType, setVisualizationType] = useState<'visual' | 'table'>('visual');
@@ -69,16 +66,133 @@ const UsChessEstimator: React.FC<UsChessEstimatorProps> = ({ preloadedResults = 
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showError, setShowError] = useState<boolean>(false);
   
-  // Add this function to show errors
-  const showErrorMessage = (message: string) => {
-    setErrorMessage(message);
-    setShowError(true);
+  // Add useSearchParams hook for URL parameter handling
+  const searchParams = useSearchParams();
+  
+  // Process URL parameters on component mount
+  useEffect(() => {
+    // Only run this on client-side
+    if (typeof window === 'undefined') return;
     
-    // Auto-hide the error after 5 seconds
-    setTimeout(() => {
-      setShowError(false);
-    }, 5000);
-  };
+    try {
+      // Get parameters from URL
+      const current = searchParams.get('current');
+      const oppParam = searchParams.get('opp');
+      const resultsParam = searchParams.get('results');
+      const prior = searchParams.get('prior');
+      const ageParam = searchParams.get('age');
+      const bonus = searchParams.get('bonus');
+      const highest = searchParams.get('highest');
+      const fideParam = searchParams.get('fide');
+      const cfcParam = searchParams.get('cfc');
+      const lifeMaster = searchParams.get('lifemaster');
+      const uscfIdParam = searchParams.get('id');
+      
+      // Only proceed if we have the essential parameters
+      if (!current || !oppParam || !resultsParam) return;
+      
+      // Create an object to hold all updates
+      const updates: {
+        currentRating?: string;
+        priorGames?: string;
+        uscfId?: string;
+        highestRating?: string;
+        age?: string;
+        applyBonus?: boolean;
+        fideRating?: string;
+        cfcRating?: string;
+        isLifeMaster?: boolean;
+        opponents?: SharedOpponentData[];
+      } = {};
+      
+      // Prepare all updates without applying them yet
+      if (current) updates.currentRating = current;
+      if (prior) updates.priorGames = prior;
+      if (uscfIdParam) updates.uscfId = uscfIdParam;
+      if (highest) updates.highestRating = highest;
+      if (ageParam) updates.age = ageParam;
+      if (bonus) updates.applyBonus = bonus.toLowerCase() === 'true';
+      if (fideParam) updates.fideRating = fideParam;
+      if (cfcParam) updates.cfcRating = cfcParam;
+      if (lifeMaster) updates.isLifeMaster = lifeMaster.toLowerCase() === 'true';
+      
+      // Process opponent ratings and results
+      if (oppParam && resultsParam) {
+        const oppRatings = oppParam.split(',');
+        const results = resultsParam.split(',');
+        
+        // Create opponents array from URL parameters
+        const newOpponents = [];
+        for (let i = 0; i < Math.min(oppRatings.length, results.length); i++) {
+          newOpponents.push({
+            rating: oppRatings[i],
+            result: results[i] as 'win' | 'loss' | 'draw',
+            id: generateId()
+          });
+        }
+        
+        // Add opponents to updates if we have valid data
+        if (newOpponents.length > 0) {
+          updates.opponents = newOpponents;
+        }
+      }
+      
+      // Apply all updates at once
+      setCurrentRating(updates.currentRating || '');
+      setPriorGames(updates.priorGames || '');
+      setUscfId(updates.uscfId || '');
+      setHighestRating(updates.highestRating || '');
+      setAge(updates.age || '');
+      setApplyBonus(updates.applyBonus !== undefined ? updates.applyBonus : true);
+      setFideRating(updates.fideRating || '');
+      setCfcRating(updates.cfcRating || '');
+      setIsLifeMaster(updates.isLifeMaster || false);
+      if (updates.opponents) setOpponents(updates.opponents);
+      
+      // Wait for state updates to complete, then calculate
+      const hasRequiredFields = 
+        updates.currentRating && 
+        updates.opponents && 
+        updates.opponents.length > 0;
+      
+      if (hasRequiredFields) {
+        // Use a timer to allow state updates to complete
+        const timer = setTimeout(() => {
+          // Manually calculate with the values we know are correct
+          const playerRating = parseInt(updates.currentRating || '0');
+          const priorGames = parseInt(updates.priorGames || '0');
+          
+          if (!isNaN(playerRating)) {
+            // Create calculation inputs directly from our updates object
+            const gameResults = updates.opponents?.map((opp: SharedOpponentData) => ({
+              opponentRating: parseInt(opp.rating),
+              result: opp.result === 'win' ? 1 : opp.result === 'draw' ? 0.5 : 0
+            })) || [];
+            
+            // Calculate directly using our parameters
+            const calculationResult = calculateUsChessRating(
+              playerRating,
+              priorGames,
+              gameResults,
+              updates.applyBonus !== undefined ? updates.applyBonus : true,
+              updates.highestRating ? parseInt(updates.highestRating) : playerRating,
+              updates.age ? parseInt(updates.age) : 0,
+              updates.fideRating ? parseInt(updates.fideRating) : 0,
+              updates.cfcRating ? parseInt(updates.cfcRating) : 0,
+              updates.isLifeMaster || false
+            );
+            
+            // Set the results directly
+            setResults(calculationResult);
+          }
+        }, 500);
+        
+        return () => clearTimeout(timer);
+      }
+    } catch (error) {
+      console.error("Error processing URL parameters:", error);
+    }
+  }, [searchParams]);
   
   // Handlers
   const handleOpponentRatingChange = (index: number, value: string): void => {
@@ -234,13 +348,16 @@ const UsChessEstimator: React.FC<UsChessEstimatorProps> = ({ preloadedResults = 
     }
   };
   
-  // Existing calculation function
-  // const calculateRating = (currentRatingValue: number, opponentsData: Opponent[]) => {
-  //   // Pass isLifeMaster to calculateRatingFloor
-  //   const ratingFloor = calculateRatingFloor(currentRatingValue, playerPriorGamesNum, isLifeMaster);
+  // Add this function to show errors
+  const showErrorMessage = (message: string) => {
+    setErrorMessage(message);
+    setShowError(true);
     
-  //   // ... rest of calculation logic ...
-  // };
+    // Auto-hide the error after 5 seconds
+    setTimeout(() => {
+      setShowError(false);
+    }, 5000);
+  };
   
   return (
     <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200">

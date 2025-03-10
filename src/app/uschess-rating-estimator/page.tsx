@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
+import UsChessEstimator from '@/components/uschess-rating-estimator/UsChessEstimator';
 import DisclaimerContent from '@/components/server/DisclaimerContent';
 import ServerInfoContent from '@/components/server/ServerInfoContent';
-import ClientWrapper from './client-wrapper';
 
 export const metadata: Metadata = {
   title: 'US Chess Rating Calculator | Chess Companion',
@@ -29,8 +30,12 @@ export default function UsChessRatingEstimatorPage() {
       <DisclaimerContent organization="USCF" />
       <ServerInfoContent contentPath="/content/uschess/info.md" />
       
-      {/* Client wrapper */}
-      <ClientWrapper />
+      {/* Client component wrapped in Suspense */}
+      <Suspense fallback={<div className="flex justify-center items-center p-12">
+        <div className="animate-pulse text-gray-500">Loading calculator...</div>
+      </div>}>
+        <UsChessEstimator />
+      </Suspense>
     </>
   );
 }
