@@ -44,7 +44,9 @@ export default function RootLayout({
         <div className="flex min-h-screen">
           <SideNav />
           <div className="flex flex-col flex-1">
-            <main className="flex-1 p-4 md:p-6">{children}</main>
+            <main className="min-h-screen">
+              {children}
+            </main>
             <Footer />
           </div>
         </div>

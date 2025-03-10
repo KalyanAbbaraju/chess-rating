@@ -29,9 +29,9 @@ export const metadata = {
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section with adjusted spacing */}
-      <section className="bg-gradient-to-br from-indigo-600 via-blue-700 to-blue-900">
-        <div className="container mx-auto px-4 md:px-6 py-16 md:py-24">
+      {/* Hero Section - Full Width with overflow technique */}
+      <section className="relative w-[100vw] left-[50%] translate-x-[-50%] bg-gradient-to-br from-indigo-600 via-blue-700 to-blue-900">
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 space-y-6">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight" style={styles.whiteText}>
@@ -58,9 +58,11 @@ export default function HomePage() {
           </div>
         </div>
         
-        {/* Improved diagonal divider - more subtle and smaller */}
-        <div className="h-8 relative overflow-hidden">
-          <div className="absolute bottom-0 left-0 right-0 h-8 bg-white" style={{ clipPath: 'polygon(0 100%, 100% 100%, 100% 30%, 0 100%)' }}></div>
+        {/* Full width diagonal divider */}
+        <div className="h-8 w-full relative overflow-hidden">
+          <div className="absolute bottom-0 left-0 right-0 h-8 bg-white" 
+               style={{ clipPath: 'polygon(0 100%, 100% 100%, 100% 30%, 0 100%)' }}>
+          </div>
         </div>
       </section>
 
@@ -151,7 +153,7 @@ export default function HomePage() {
                   <Clock size={32} />
                 </div>
                 <p className="text-gray-600 mb-6">
-                  We're working on adding more rating calculators for different chess federations and rating systems.
+                  We&apos;re working on adding more rating calculators for different chess federations and rating systems.
                 </p>
                 <ul className="space-y-2 mb-6 text-sm">
                   <li className="flex items-center">
@@ -245,7 +247,7 @@ export default function HomePage() {
               </div>
               <div>
                 <h3 className="font-semibold" style={styles.darkGrayText}>US Chess Rating System</h3>
-                <p className="text-sm" style={styles.grayText}>US Chess Federation's official rating documentation</p>
+                <p className="text-sm" style={styles.grayText}>US Chess Federation&apos;s official rating documentation</p>
               </div>
             </a>
           </div>
