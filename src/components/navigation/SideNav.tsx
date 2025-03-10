@@ -28,8 +28,8 @@ export default function SideNav() {
     <>
       {/* Hamburger Button - only visible when sidebar is closed */}
       {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
+        <button 
+          onClick={() => setIsOpen(true)} 
           className="fixed top-4 left-4 z-30 p-2 rounded-md bg-white shadow-sm hover:bg-gray-50 transition-colors"
           aria-label="Open navigation"
         >

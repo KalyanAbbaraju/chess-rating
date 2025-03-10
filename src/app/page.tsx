@@ -1,54 +1,177 @@
 import React from 'react';
 import Link from 'next/link';
-import { Calculator, BarChart2 } from 'lucide-react';
+import { Calculator, BarChart2, ChevronsRight, Award, Users, Clock, ExternalLink } from 'lucide-react';
+
+// Add custom styles to override any conflicting styles
+const styles = {
+  whiteText: {
+    color: 'white !important',
+  },
+  lightBlueText: {
+    color: '#bfdbfe !important', // text-blue-100
+  },
+  indigo700Text: {
+    color: '#4338ca !important', // text-indigo-700
+  },
+  grayText: {
+    color: '#4b5563 !important', // text-gray-600
+  },
+  darkGrayText: {
+    color: '#374151 !important', // text-gray-700
+  }
+};
 
 export const metadata = {
-  title: 'Chess Tools & Resources',
-  description: 'Your one-stop destination for chess tools, calculators, and resources',
+  title: 'Chess Rating Estimator | Professional Chess Tools',
+  description: 'Estimate your chess rating changes with professional-grade tools for US Chess and FIDE and more',
 };
 
 export default function HomePage() {
   return (
-    <div className="bg-base-200 dark:bg-base-300">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary to-primary-focus text-primary-content">
-        <div className="container px-4 py-12 md:py-20">
+    <div className="min-h-screen bg-white">
+      {/* Hero Section with adjusted spacing */}
+      <section className="bg-gradient-to-br from-indigo-600 via-blue-700 to-blue-900">
+        <div className="container mx-auto px-4 md:px-6 py-16 md:py-24">
           <div className="flex flex-col md:flex-row items-center">
-            <div className="md:w-1/2 mb-10 md:mb-0">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-                Chess Tools & Resources
+            <div className="md:w-1/2 space-y-6">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight" style={styles.whiteText}>
+                Estimate Your Chess Rating Changes
               </h1>
-              <p className="text-lg sm:text-xl mb-8 text-primary-content/90">
-                Enhance your chess experience with our collection of calculators, 
-                tools, and resources designed for players of all levels.
+              <p className="text-lg md:text-xl" style={styles.lightBlueText}>
+                Professional-grade chess rating estimators using official formulas from FIDE, US Chess, and more.
               </p>
-              <div className="flex flex-wrap gap-4">
+              <div className="pt-4">
                 <Link 
                   href="/uschess-rating-estimator" 
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-white text-primary font-medium border border-transparent hover:bg-blue-50 hover:border-blue-100 transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="inline-flex items-center px-6 py-3 text-base font-medium rounded-md bg-white hover:bg-blue-50 focus:outline-none transition-colors shadow-md"
                 >
-                  <Calculator className="w-5 h-5 mr-2" />
-                  US Chess Rating Estimator
-                </Link>
-                <Link 
-                  href="/fide-rating-estimator" 
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-blue-50 text-primary font-medium border border-blue-100 hover:bg-white hover:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
-                >
-                  <BarChart2 className="w-5 h-5 mr-2" />
-                  FIDE Rating Estimator
+                  <span style={styles.indigo700Text}>Try US Chess Rating Estimator</span>
+                  <ChevronsRight className="ml-2 h-5 w-5" style={styles.indigo700Text} />
                 </Link>
               </div>
             </div>
-            <div className="md:w-1/2 flex justify-center">
-              <div className="relative w-64 h-64 sm:w-80 sm:h-80">
-                <div className="absolute inset-0 bg-white/20 backdrop-blur-sm rounded-lg transform rotate-6"></div>
-                <div className="absolute inset-0 bg-white/30 backdrop-blur-sm rounded-lg transform -rotate-3"></div>
-                <div className="absolute inset-0 bg-white rounded-lg shadow-xl overflow-hidden">
-                  {/* Replace with your own image path or fallback */}
-                  <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
-                    <span className="text-8xl">♞</span>
-                  </div>
+            <div className="md:w-1/2 mt-10 md:mt-0 flex justify-center">
+              <div className="bg-white p-8 rounded-full shadow-xl bg-opacity-90">
+                <Calculator className="w-32 h-32 md:w-48 md:h-48" style={styles.indigo700Text} />
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Improved diagonal divider - more subtle and smaller */}
+        <div className="h-8 relative overflow-hidden">
+          <div className="absolute bottom-0 left-0 right-0 h-8 bg-white" style={{ clipPath: 'polygon(0 100%, 100% 100%, 100% 30%, 0 100%)' }}></div>
+        </div>
+      </section>
+
+      {/* Calculators Section - moved closer to hero */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-3xl font-bold text-center mb-10" style={styles.darkGrayText}>
+            Choose Your Rating Estimator
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            {/* US Chess Card */}
+            <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col transform hover:-translate-y-1">
+              <div className="bg-gradient-to-r from-red-700 to-red-900 px-6 py-5">
+                <h3 className="text-xl font-semibold" style={styles.whiteText}>US Chess Rating</h3>
+              </div>
+              <div className="p-6 flex-grow">
+                <div className="mb-4 text-red-700">
+                  <Calculator size={32} />
                 </div>
+                <p className="text-gray-600 mb-6">
+                  Calculate your US Chess rating changes with bonus points, rating floors, and special category adjustments.
+                </p>
+                <ul className="space-y-2 mb-6 text-sm text-gray-700">
+                  <li className="flex items-center">
+                    <span className="bg-red-100 p-1 rounded-full mr-2 text-red-700">✓</span>
+                    <span className="text-gray-700">Official USCF formula</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="bg-red-100 p-1 rounded-full mr-2 text-red-700">✓</span>
+                    <span className="text-gray-700">Quick, Regular & Dual rating modes</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="bg-red-100 p-1 rounded-full mr-2 text-red-700">✓</span>
+                    <span className="text-gray-700">Rating floor protection</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="px-6 pb-6">
+                <Link href="/uschess-rating-estimator" className="block w-full py-2.5 px-4 bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 text-center rounded-md transition-colors">
+                  <span style={styles.whiteText}>Open Calculator</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* FIDE Card */}
+            <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col transform hover:-translate-y-1">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-5">
+                <h3 className="text-xl font-semibold" style={styles.whiteText}>FIDE Rating</h3>
+              </div>
+              <div className="p-6 flex-grow">
+                <div className="mb-4" style={styles.indigo700Text}>
+                  <BarChart2 size={32} />
+                </div>
+                <p className="mb-6" style={styles.grayText}>
+                  Estimate international Elo rating changes using the official FIDE formula for standard, rapid, and blitz games.
+                </p>
+                <ul className="space-y-2 mb-6 text-sm text-gray-700">
+                  <li className="flex items-center">
+                    <span className="bg-indigo-100 p-1 rounded-full mr-2 text-indigo-600">✓</span>
+                    <span className="text-gray-700">Official FIDE K-factor rules</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="bg-indigo-100 p-1 rounded-full mr-2 text-indigo-600">✓</span>
+                    <span className="text-gray-700">Performance rating calculator</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="bg-indigo-100 p-1 rounded-full mr-2 text-indigo-600">✓</span>
+                    <span className="text-gray-700">Expected score tables</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="px-6 pb-6">
+                <Link href="/fide-rating-estimator" className="block w-full py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-center rounded-md transition-colors">
+                  <span style={styles.whiteText}>Open Calculator</span>
+                </Link>
+              </div>
+            </div>
+            
+            {/* Coming Soon Card */}
+            <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col transform hover:-translate-y-1">
+              <div className="bg-gradient-to-r from-slate-600 to-slate-800 px-6 py-5">
+                <h3 className="text-xl font-semibold" style={styles.whiteText}>More Coming Soon</h3>
+              </div>
+              <div className="p-6 flex-grow">
+                <div className="mb-4 text-slate-600">
+                  <Clock size={32} />
+                </div>
+                <p className="text-gray-600 mb-6">
+                  We're working on adding more rating calculators for different chess federations and rating systems.
+                </p>
+                <ul className="space-y-2 mb-6 text-sm">
+                  <li className="flex items-center">
+                    <span className="bg-slate-100 p-1 rounded-full mr-2 text-slate-400">○</span>
+                    <span className="text-gray-500">ECF (England) Rating Calculator</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="bg-slate-100 p-1 rounded-full mr-2 text-slate-400">○</span>
+                    <span className="text-gray-500">CFC (Canada) Rating Calculator</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="bg-slate-100 p-1 rounded-full mr-2 text-slate-400">○</span>
+                    <span className="text-gray-500">Custom Tournament Simulations</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="px-6 pb-6">
+                <button disabled className="block w-full py-2.5 px-4 bg-gradient-to-r from-slate-400 to-slate-500 text-center rounded-md cursor-not-allowed">
+                  <span style={styles.whiteText}>Coming Soon</span>
+                </button>
               </div>
             </div>
           </div>
@@ -56,158 +179,96 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section id="tools" className="py-12 md:py-16">
-        <div className="container px-4">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 md:mb-12">Our Chess Tools</h2>
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-3xl font-bold text-center mb-12" style={styles.darkGrayText}>
+            Why Use Our Calculators
+          </h2>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* US Chess Rating Estimator Card */}
-            <div className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300">
-              <div className="h-32 sm:h-40 bg-primary flex items-center justify-center">
-                <Calculator className="h-16 w-16 text-primary-content" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
+              <div className="text-indigo-600 mb-4">
+                <Calculator size={26} />
               </div>
-              <div className="p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-semibold mb-2">US Chess Rating Estimator</h3>
-                <p className="text-base-content/70 mb-4 text-sm sm:text-base">
-                  Calculate your expected US Chess rating changes based on tournament performance.
-                </p>
-                <Link 
-                  href="/uschess-rating-estimator" 
-                  className="text-primary hover:text-primary-focus font-medium inline-flex items-center text-sm sm:text-base"
-                >
-                  Try US Chess Estimator
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </Link>
-              </div>
+              <h3 className="text-xl font-semibold mb-2" style={styles.darkGrayText}>Accurate Formulas</h3>
+              <p className="text-gray-700">
+                All calculators use the official, up-to-date formulas from their respective chess federations.
+              </p>
             </div>
             
-            {/* FIDE Rating Estimator Card */}
-            <div className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300">
-              <div className="h-32 sm:h-40 bg-indigo-600 flex items-center justify-center">
-                <BarChart2 className="h-16 w-16 text-white" />
+            <div className="p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
+              <div className="text-indigo-600 mb-4">
+                <Award size={26} />
               </div>
-              <div className="p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-semibold mb-2">FIDE Rating Estimator</h3>
-                <p className="text-base-content/70 mb-4 text-sm sm:text-base">
-                  Estimate your FIDE Elo rating changes using official FIDE formulas.
-                </p>
-                <Link 
-                  href="/fide-rating-estimator" 
-                  className="text-primary hover:text-primary-focus font-medium inline-flex items-center text-sm sm:text-base"
-                >
-                  Try FIDE Estimator
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </Link>
-              </div>
+              <h3 className="text-xl font-semibold mb-2" style={styles.darkGrayText}>Special Rules</h3>
+              <p className="text-gray-700">
+                Accounts for special cases like rating floors, bonus points, and category adjustments.
+              </p>
             </div>
             
-            {/* Scoresheet Scanner Card */}
-            <div className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300">
-              <div className="h-32 sm:h-40 bg-accent flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-accent-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+            <div className="p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
+              <div className="text-indigo-600 mb-4">
+                <Users size={26} />
               </div>
-              <div className="p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-semibold mb-2">Scoresheet Scanner</h3>
-                <p className="text-base-content/70 mb-4 text-sm sm:text-base">
-                  Digitize your handwritten chess scoresheets quickly.
-                </p>
-                <Link 
-                  href="/scoresheet-scanner" 
-                  className="text-primary hover:text-primary-focus font-medium inline-flex items-center text-sm sm:text-base"
-                >
-                  Try Scoresheet Scanner
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-            
-            {/* Opening Explorer Card */}
-            <div className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300">
-              <div className="h-32 sm:h-40 bg-success flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-              </div>
-              <div className="p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-semibold mb-2">Opening Explorer</h3>
-                <p className="text-base-content/70 mb-4 text-sm sm:text-base">
-                  Explore chess openings and learn popular lines.
-                </p>
-                <span className="text-base-content/50 inline-flex items-center text-sm sm:text-base">
-                  Coming Soon
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                  </svg>
-                </span>
-              </div>
-            </div>
-            
-            {/* Game Analyzer Card */}
-            <div className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow duration-300">
-              <div className="h-32 sm:h-40 bg-info flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <div className="p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-semibold mb-2">Game Analyzer</h3>
-                <p className="text-base-content/70 mb-4 text-sm sm:text-base">
-                  Get insights on your strengths and weaknesses.
-                </p>
-                <span className="text-base-content/50 inline-flex items-center text-sm sm:text-base">
-                  Coming Soon
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                  </svg>
-                </span>
-              </div>
+              <h3 className="text-xl font-semibold mb-2" style={styles.darkGrayText}>Made for Players</h3>
+              <p className="text-gray-700">
+                Designed by chess players for chess players, with intuitive interfaces and helpful explanations.
+              </p>
             </div>
           </div>
         </div>
       </section>
-
-      {/* About Section */}
-      <section className="py-12 md:py-16 bg-base-100">
-        <div className="container px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">About Our Chess Tools</h2>
-            <p className="text-base-content/80 mb-6 text-sm sm:text-base">
-              Our chess tools are designed to help players of all levels improve their game. 
-              Whether you&apos;re a beginner looking to understand your rating or an experienced player 
-              analyzing your games, we have resources to support your chess journey.
-            </p>
-            <p className="text-base-content/80 text-sm sm:text-base">
-              These tools use official USCF formulas and best practices to provide accurate 
-              and helpful information. We&apos;re constantly working to add new features and improve 
-              existing ones based on user feedback.
-            </p>
+      
+      {/* Resource Links */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-3xl font-bold text-center mb-12" style={styles.darkGrayText}>
+            Chess Rating Resources
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <a href="https://www.fide.com/FIDE/handbook/LawsOfChess.pdf" target="_blank" rel="noopener noreferrer" 
+               className="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center border border-gray-200 hover:border-indigo-200 transform hover:-translate-y-1">
+              <div className="mr-4 text-indigo-600">
+                <ExternalLink size={24} />
+              </div>
+              <div>
+                <h3 className="font-semibold" style={styles.darkGrayText}>FIDE Rating Regulations</h3>
+                <p className="text-sm" style={styles.grayText}>Official rating regulations handbook from FIDE</p>
+              </div>
+            </a>
+            
+            <a href="https://new.uschess.org/sites/default/files/media/documents/us-chess-rule-book-online-only-edition-chapters-1-2-11-9-21.pdf" target="_blank" rel="noopener noreferrer"
+               className="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center border border-gray-200 hover:border-red-200 transform hover:-translate-y-1">
+              <div className="mr-4 text-red-700">
+                <ExternalLink size={24} />
+              </div>
+              <div>
+                <h3 className="font-semibold" style={styles.darkGrayText}>US Chess Rating System</h3>
+                <p className="text-sm" style={styles.grayText}>US Chess Federation's official rating documentation</p>
+              </div>
+            </a>
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
-      <section className="py-12 md:py-16 bg-primary text-primary-content">
-        <div className="container px-4 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Ready to Improve Your Chess?</h2>
-          <p className="text-lg sm:text-xl text-primary-content/90 mb-6 sm:mb-8 max-w-2xl mx-auto">
-            Start using our chess tools today and take your game to the next level.
+      
+      {/* Call to Action */}
+      <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+        <div className="container mx-auto px-4 md:px-6 py-16 text-center">
+          <h2 className="text-3xl font-bold mb-6" style={styles.whiteText}>Ready to Calculate Your Rating?</h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto" style={styles.lightBlueText}>
+            Try our chess rating calculators to predict your post-tournament rating changes.
           </p>
-          <Link 
-            href="/uschess-rating-estimator" 
-            className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-white text-primary font-medium hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-            <Calculator className="w-5 h-5 mr-2" />
-            Try Our Rating Calculators
-          </Link>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link href="/fide-rating-estimator" 
+                  className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md bg-white hover:bg-indigo-50 transition-colors shadow-md">
+              <span style={styles.indigo700Text}>FIDE Calculator</span>
+            </Link>
+            <Link href="/uschess-rating-estimator"
+                  className="inline-flex items-center justify-center px-6 py-3 border border-indigo-300 text-base font-medium rounded-md bg-transparent hover:bg-indigo-800 transition-colors shadow-md">
+              <span style={styles.whiteText}>US Chess Calculator</span>
+            </Link>
+          </div>
         </div>
       </section>
     </div>
