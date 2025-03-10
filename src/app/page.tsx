@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Calculator, BarChart2, ChevronsRight, Award, Users, Clock, ExternalLink } from 'lucide-react';
+import Image from 'next/image';
 
 // Add custom styles to override any conflicting styles
 const styles = {
@@ -51,8 +52,15 @@ export default function HomePage() {
               </div>
             </div>
             <div className="md:w-1/2 mt-10 md:mt-0 flex justify-center">
-              <div className="bg-white p-8 rounded-full shadow-xl bg-opacity-90">
-                <Calculator className="w-32 h-32 md:w-48 md:h-48" style={styles.indigo700Text} />
+              <div className="bg-white p-4 rounded-xl shadow-xl">
+                <Image
+                  src="/images/chess-hero.jpeg"
+                  alt="Chess rating calculation illustration"
+                  width={500}
+                  height={400}
+                  className="rounded-lg"
+                  priority
+                />
               </div>
             </div>
           </div>
