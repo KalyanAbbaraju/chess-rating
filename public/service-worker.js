@@ -1,8 +1,8 @@
 const CACHE_NAME = 'chess-rating-v1';
 const urlsToCache = [
   '/',
-  '/fide-rating-estimator',
-  '/uschess-rating-estimator',
+  '/calculators/fide',
+  '/calculators/uscf',
   '/images/chess-hero.jpeg',
   '/manifest.json'
 ];

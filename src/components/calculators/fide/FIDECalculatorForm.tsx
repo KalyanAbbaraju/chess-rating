@@ -12,6 +12,7 @@ import { FIDEInfo } from './FIDEInfo';
 import { calculateFIDERating, GameResult } from '@/lib/fideRatingCalculator';
 import { FideRatingResult } from '@/lib/ratingTypes';
 import 'katex/dist/katex.min.css';
+import DisclaimerModal from '@/components/client/DisclaimerModal';
 
 interface FIDECalculatorFormProps {
   onCalculate: (data: FideRatingResult) => void;
@@ -178,6 +179,56 @@ export function FIDECalculatorForm({ onCalculate }: FIDECalculatorFormProps) {
   const selectClasses = "w-full max-w-[120px] py-1 text-xs text-gray-700 bg-transparent border-0 border-b border-gray-300 rounded-none hover:border-gray-400 transition-colors focus:ring-0 focus:outline-none focus:border-b-2 focus:border-blue-500 focus-visible:ring-0 focus-visible:ring-offset-0 h-8";
   // Special narrower input for FIDE ID field
   const fideIdInputClasses = "w-full max-w-[100px] py-1 text-xs text-gray-700 bg-transparent border-0 border-b border-gray-300 rounded-none hover:border-gray-400 transition-colors focus:ring-0 focus:outline-none focus:border-b-2 focus:border-blue-500 focus-visible:ring-0 focus-visible:ring-offset-0 h-8";
+
+  // Add effect to inject disclaimer content directly into DOM without visible elements
+  useEffect(() => {
+    // Create the content container if it doesn't exist
+    if (!document.querySelector('[data-disclaimer-content="FIDE"]')) {
+      const container = document.createElement('div');
+      container.setAttribute('data-disclaimer-content', 'FIDE');
+      container.style.display = 'none';
+      
+      const content = document.createElement('div');
+      content.className = 'disclaimer-details-content';
+      
+      content.innerHTML = `
+        <p class="mb-3">
+          The FIDE rating calculator provided on this site is an <strong>estimation tool</strong> 
+          that implements the official FIDE rating formulas to the best of our ability. However, users should note:
+        </p>
+        
+        <ul class="list-disc pl-5 mb-3 space-y-2">
+          <li>
+            This calculator may not account for every special case or exception in the official FIDE rating system.
+          </li>
+          <li>
+            Official FIDE ratings are calculated by the International Chess Federation using their proprietary systems and may include additional factors not covered in this calculator.
+          </li>
+          <li>
+            Rating floors, provisional rating rules, and special tournament conditions may affect official calculations in ways not fully reflected here.
+          </li>
+          <li>
+            The calculator does not have access to FIDE's database of official ratings and relies on user-provided information.
+          </li>
+        </ul>
+        
+        <p class="mb-3">
+          For official ratings, tournament results, and rating changes, please refer to the 
+          <a href="https://ratings.fide.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 mx-1">
+            FIDE website
+          </a>
+          or contact them directly.
+        </p>
+        
+        <p>
+          This tool is provided for educational and informational purposes only.
+        </p>
+      `;
+      
+      container.appendChild(content);
+      document.body.appendChild(container);
+    }
+  }, []);
 
   return (
     <div className="w-full">
@@ -346,9 +397,24 @@ export function FIDECalculatorForm({ onCalculate }: FIDECalculatorFormProps) {
         </TabsContent>
       </Tabs>
       
-      <div className="bg-gray-50 border-t border-gray-200 px-3 py-1.5 text-[10px] text-gray-600 mt-3">
-        This is an estimate only; actual FIDE calculations may vary slightly.
+      <div className="bg-gray-50 border-t border-gray-200 mt-3">
+        <DisclaimerModal
+          shortText="This is an estimate only; actual FIDE calculations may vary slightly."
+          title="FIDE Rating Calculation Disclaimer"
+          organization="FIDE"
+          className="px-3 py-2 text-xs custom-disclaimer"
+        />
       </div>
+      
+      <style jsx global>{`
+        .custom-disclaimer button {
+          color: #4b5563;
+        }
+        /* Improve the visibility of disclaimer content */
+        .disclaimer-details-content {
+          color: #333 !important;
+        }
+      `}</style>
     </div>
   );
 } 

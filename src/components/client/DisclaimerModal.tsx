@@ -21,11 +21,15 @@ const DisclaimerModal: React.FC<DisclaimerModalProps> = ({
   
   // Effect to hydrate the details content from the server component
   useEffect(() => {
-    const contentEl = document.querySelector(`[data-disclaimer-content="${organization}"] .disclaimer-details-content`);
-    if (contentEl) {
-      setDetailsContent(contentEl.innerHTML);
+    if (isModalOpen) {
+      const contentEl = document.querySelector(`[data-disclaimer-content="${organization}"] .disclaimer-details-content`);
+      if (contentEl) {
+        setDetailsContent(contentEl.innerHTML);
+      } else {
+        console.error(`Could not find disclaimer content for ${organization}`);
+      }
     }
-  }, [organization]);
+  }, [organization, isModalOpen]);
 
   return (
     <div className={`flex justify-between items-center text-xs text-gray-500 ${className}`}>
@@ -42,7 +46,7 @@ const DisclaimerModal: React.FC<DisclaimerModalProps> = ({
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onClick={() => setIsModalOpen(false)}>
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-center p-4 border-b">
+            <div className="flex justify-between items-center p-4 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
               <button 
                 onClick={() => setIsModalOpen(false)} 
@@ -64,7 +68,7 @@ const DisclaimerModal: React.FC<DisclaimerModalProps> = ({
               </div>
             )}
             
-            <div className="p-4 border-t bg-gray-50 flex justify-end">
+            <div className="p-4 border-t border-gray-200 bg-gray-50 flex justify-end">
               <button 
                 onClick={() => setIsModalOpen(false)}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

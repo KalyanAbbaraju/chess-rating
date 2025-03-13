@@ -9,12 +9,12 @@ const Sidenav: React.FC = () => {
   const navItems = [
     {
       name: 'US Chess Rating Estimator',
-      href: '/uschess-rating-estimator',
+      href: '/calculators/uscf',
       icon: <Calculator className="h-5 w-5" />
     },
     {
       name: 'FIDE Rating Estimator',
-      href: '/fide-rating-estimator',
+      href: '/calculators/fide',
       icon: <BarChart2 className="h-5 w-5" />
     }
     // ELO Rating Estimator, Resources and Settings removed
@@ -31,7 +31,7 @@ const Sidenav: React.FC = () => {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                className={`flex items-center px-3 py-2 rounded-md text-xs font-medium ${
                   pathname === item.href
                     ? 'bg-blue-50 text-blue-700'
                     : 'text-gray-700 hover:bg-gray-100'

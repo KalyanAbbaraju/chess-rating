@@ -9,8 +9,8 @@ import { GiChessKnight } from 'react-icons/gi';
 // Navigation items with icons directly included
 const navItems = [
   { name: 'Home', href: '/', icon: Home },
-  { name: 'US Chess Rating Estimator', href: '/uschess-rating-estimator', icon: Calculator },
-  { name: 'FIDE Rating Estimator', href: '/fide-rating-estimator', icon: BarChart2 },
+  { name: 'US Chess Rating Estimator', href: '/calculators/uscf', icon: Calculator },
+  { name: 'FIDE Rating Estimator', href: '/calculators/fide', icon: BarChart2 },
   { name: 'About', href: '/about', icon: Info },
   { name: 'Contact', href: '/contact', icon: Mail },
 ];
@@ -71,7 +71,7 @@ export default function SideNav() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className={`flex items-center px-4 py-2.5 rounded-md transition-colors ${
+                    className={`flex items-center px-4 py-2.5 rounded-md transition-colors text-xs ${
                       isActive 
                         ? 'bg-blue-50 text-blue-600 font-medium' 
                         : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'

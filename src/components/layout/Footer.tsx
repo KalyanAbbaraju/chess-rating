@@ -21,12 +21,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/uschess-rating-estimator" className="text-gray-600 hover:text-blue-600 text-sm">
+                <Link href="/calculators/uscf" className="text-gray-600 hover:text-blue-600 text-sm">
                   US Chess Rating Estimator
                 </Link>
               </li>
               <li>
-                <Link href="/fide-rating-estimator" className="text-gray-600 hover:text-blue-600 text-sm">
+                <Link href="/calculators/fide" className="text-gray-600 hover:text-blue-600 text-sm">
                   FIDE Rating Estimator
                 </Link>
               </li>

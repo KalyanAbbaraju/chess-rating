@@ -140,3 +140,27 @@ h1, h2, h3, h4, h5, h6, p, span, button, a, label {
 .math {
   font-size: 1.1em;
 }
+
+/* Ensure all blue buttons have white text for better contrast */
+.bg-blue-500,
+.bg-blue-600, 
+.bg-blue-700,
+[class*="bg-blue-"] {
+  color: white !important;
+}
+
+/* Ensure blue buttons maintain white text on hover */
+button.hover\:bg-blue-500:hover,
+button.hover\:bg-blue-600:hover,
+button.hover\:bg-blue-700:hover,
+button[class*="hover:bg-blue-"]:hover {
+  color: white !important;
+}
+
+/* Also ensure the same for primary buttons which might use different classes */
+.btn-primary,
+.btn-blue,
+button[class*="btn-blue"],
+button[class*="btn-primary"] {
+  color: white !important;
+}
