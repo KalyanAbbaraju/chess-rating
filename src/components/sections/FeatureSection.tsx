@@ -1,5 +1,6 @@
 import React from 'react';
 import { Calculator, Award, Users } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Styles for text colors
 const styles = {
@@ -17,35 +18,47 @@ export default function FeatureSection() {
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
-            <div className="text-indigo-600 mb-4">
-              <Calculator size={26} />
-            </div>
-            <h3 className="text-xl font-semibold mb-2" style={styles.darkGrayText}>Accurate Formulas</h3>
-            <p className="text-gray-700">
-              All calculators use the official, up-to-date formulas from their respective chess federations.
-            </p>
-          </div>
+          <Card className="hover:shadow-md transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
+            <CardHeader>
+              <div className="text-indigo-600 mb-2">
+                <Calculator size={26} />
+              </div>
+              <CardTitle className="text-xl" style={styles.darkGrayText}>Accurate Formulas</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-700">
+                All calculators use the official, up-to-date formulas from their respective chess federations.
+              </p>
+            </CardContent>
+          </Card>
           
-          <div className="p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
-            <div className="text-indigo-600 mb-4">
-              <Award size={26} />
-            </div>
-            <h3 className="text-xl font-semibold mb-2" style={styles.darkGrayText}>Special Rules</h3>
-            <p className="text-gray-700">
-              Accounts for special cases like rating floors, bonus points, and category adjustments.
-            </p>
-          </div>
+          <Card className="hover:shadow-md transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
+            <CardHeader>
+              <div className="text-indigo-600 mb-2">
+                <Award size={26} />
+              </div>
+              <CardTitle className="text-xl" style={styles.darkGrayText}>Special Rules</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-700">
+                Accounts for special cases like rating floors, bonus points, and category adjustments.
+              </p>
+            </CardContent>
+          </Card>
           
-          <div className="p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
-            <div className="text-indigo-600 mb-4">
-              <Users size={26} />
-            </div>
-            <h3 className="text-xl font-semibold mb-2" style={styles.darkGrayText}>Made for Players</h3>
-            <p className="text-gray-700">
-              Designed by chess players for chess players, with intuitive interfaces and helpful explanations.
-            </p>
-          </div>
+          <Card className="hover:shadow-md transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
+            <CardHeader>
+              <div className="text-indigo-600 mb-2">
+                <Users size={26} />
+              </div>
+              <CardTitle className="text-xl" style={styles.darkGrayText}>Made for Players</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-700">
+                Designed by chess players for chess players, with intuitive interfaces and helpful explanations.
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>
