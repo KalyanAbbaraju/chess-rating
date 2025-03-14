@@ -1,6 +1,12 @@
 import React from 'react';
 import ContactForm from '@/components/contact/ContactForm';
 import { Mail } from 'lucide-react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Contact Elo Estimate - Get in Touch with Our Team',
+  description: 'Have questions about chess ratings or our calculators? Contact the Elo Estimate team for support, feedback, or partnership opportunities.'
+};
 
 export default function ContactPage() {
   return (
@@ -12,7 +18,7 @@ export default function ContactPage() {
           <Mail className="w-6 h-6 mr-3 text-blue-600" />
           Contact Us
         </h1>
-        <p className="text-gray-500 mt-2 text-lg">We'd love to hear from you</p>
+        <p className="text-gray-500 mt-2 text-lg">We&apos;d love to hear from you</p>
       </div>
       
       {/* Contact form - now takes full width */}

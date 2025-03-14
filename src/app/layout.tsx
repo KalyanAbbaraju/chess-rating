@@ -6,6 +6,7 @@ import "./globals.css";
 import Footer from '@/components/layout/Footer';
 import PWARegistration from './pwa';
 import { Analytics } from '@vercel/analytics/react';
+import type { Viewport } from 'next';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,19 +19,94 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Chess Companion",
-  description: "Your complete chess companion for analysis and improvement",
+  title: "Elo Estimate",
+  description: "Your complete chess rating calculator for analysis and improvement",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_BASE_URL || 
     process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}` || 
-    'https://chess-companion.example.com'
+    'https://eloestimate.com'
   ),
   icons: {
     icon: '/favicon.ico',
   },
+  openGraph: {
+    title: "Elo Estimate",
+    description: "Your complete chess rating calculator for analysis and improvement",
+    url: "https://eloestimate.com",
+    siteName: "Elo Estimate",
+    images: [
+      {
+        url: "https://eloestimate.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Elo Estimate",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Elo Estimate",
+    description: "Your complete chess rating calculator for analysis and improvement",
+    images: ["https://eloestimate.com/twitter-image.jpg"],
+  },
   other: {
     'content-security-policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;"
-  }
+  },
+  keywords: 'chess, rating calculator, FIDE, USCF, ECF, chess rating, elo rating',
+  authors: [{ name: 'Elo Estimate Team' }],
+  creator: 'Elo Estimate',
+  publisher: 'Elo Estimate',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_BASE_URL || 'https://eloestimate.com',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-site-verification',
+    yandex: 'your-yandex-verification',
+  },
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Elo Estimate',
+  },
+  applicationName: 'Elo Estimate',
+  referrer: 'origin-when-cross-origin',
+};
+
+export const viewport: Viewport = {
+  themeColor: '#4338ca',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  colorScheme: 'light',
+};
+
+export const headers = {
+  'X-DNS-Prefetch-Control': 'on',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'X-Frame-Options': 'SAMEORIGIN',
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
 };
 
 export default function RootLayout({

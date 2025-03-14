@@ -1,7 +1,11 @@
-'use client';
-
 import React from 'react';
 import { BookOpen } from 'lucide-react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'About Elo Estimate - Our Mission and Tools',
+  description: 'Learn about Elo Estimate, our mission to help chess players improve with accurate rating calculators, educational resources, and community support.'
+};
 
 export default function AboutPage() {
   return (
@@ -11,14 +15,14 @@ export default function AboutPage() {
         <div className="absolute top-0 left-0 w-20 h-1 bg-blue-600"></div>
         <h1 className="text-3xl font-bold mt-6 text-gray-800 flex items-center">
           <BookOpen className="w-6 h-6 mr-3 text-blue-600" />
-          About Chess Companion
+          About Elo Estimate
         </h1>
         <p className="text-gray-500 mt-2 text-lg">A toolkit for chess players of all levels</p>
       </div>
       
       <div className="prose prose-slate max-w-none">
         <p className="text-lg leading-relaxed mb-8">
-          Chess Companion is a comprehensive toolkit designed to help chess players of all levels improve their game and track their progress. Our platform provides accurate calculation tools, educational resources, and a supportive community environment.
+          Elo Estimate is a comprehensive toolkit designed to help chess players of all levels improve their game and track their progress. Our platform provides accurate calculation tools, educational resources, and a supportive community environment.
         </p>
         
         {/* Mission section with subtle background */}
@@ -38,7 +42,7 @@ export default function AboutPage() {
         {/* Team section */}
         <h2 className="text-2xl font-semibold mt-10 mb-4 text-gray-800 border-b pb-2">The Team</h2>
         <p className="text-gray-700 mb-6">
-          Chess Companion was created by a team of chess enthusiasts and developers who wanted to combine their passion for chess with their technical skills. We are constantly working to improve our tools and add new features based on user feedback.
+          Elo Estimate was created by a team of chess enthusiasts and developers who wanted to combine their passion for chess with their technical skills. We are constantly working to improve our tools and add new features based on user feedback.
         </p>
         
         {/* Disclaimer section with attention-grabbing style */}

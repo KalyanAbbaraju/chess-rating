@@ -24,7 +24,7 @@ export interface BaseRatingResult {
   kFactor: number; 
   isProvisional?: boolean; // based on number of games played
   // totalScore: number;
-  type: 'uschess' | 'fide'; // Discriminator field
+  type: 'uschess' | 'fide' | 'ecf'; // Discriminator field
 }
 
 // US Chess specific extensions
@@ -49,5 +49,13 @@ export interface FideRatingResult extends BaseRatingResult {
   dynamicKFactor?: number;
 }
 
+// ECF specific extensions
+export interface EcfRatingResult extends BaseRatingResult {
+  type: 'ecf';
+  expectedScore: number;
+  eloEquivalent?: number;
+  opponentEloEquivalent?: number;
+}
+
 // Union type for all possible results
-export type RatingResult = UsChessRatingResult | FideRatingResult;
+export type RatingResult = UsChessRatingResult | FideRatingResult | EcfRatingResult;

@@ -63,7 +63,7 @@ export function USChessCalculatorForm({ onCalculate }: USChessCalculatorFormProp
   
   const updateOpponent = (index: number, field: 'rating' | 'result', value: string) => {
     const newOpponents = [...opponents];
-    newOpponents[index] = {...newOpponents[index], [field]: value as any};
+    newOpponents[index] = {...newOpponents[index], [field]: value as 'win' | 'draw' | 'loss'};
     setOpponents(newOpponents);
   };
 
@@ -150,9 +150,6 @@ export function USChessCalculatorForm({ onCalculate }: USChessCalculatorFormProp
       
       // Check if the result is of type UsChessRatingResult
       if (result.type === 'uschess') {
-        // Store the player ID separately
-        const playerIdValue = playerId || undefined;
-        
         // Pass the result to the parent component
         onCalculate(result);
         

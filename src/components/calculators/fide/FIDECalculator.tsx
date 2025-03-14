@@ -2,19 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { FIDECalculatorForm } from './FIDECalculatorForm';
-import { FIDEInfo } from './FIDEInfo';
 import RatingChangeVisual from '@/components/shared/RatingChangeVisual';
 import RatingResultsTable from '@/components/shared/RatingResultsTable';
 import { FideRatingResult, RatingResult } from '@/lib/ratingTypes';
 
 interface FIDECalculatorProps {
-  title?: string;
-  description?: string;
   initialResults?: FideRatingResult | null;
   onReset?: () => void;
 }
 
-export function FIDECalculator({ title, description, initialResults, onReset }: FIDECalculatorProps) {
+export function FIDECalculator({ initialResults, onReset }: FIDECalculatorProps) {
   const [results, setResults] = useState<RatingResult | null>(initialResults || null);
   const [visualizationType, setVisualizationType] = useState<'visual' | 'table'>('table');
   const [error, setError] = useState<string | null>(null);
@@ -76,14 +73,6 @@ export function FIDECalculator({ title, description, initialResults, onReset }: 
     if (onReset) {
       onReset();
     }
-  };
-
-  // Add a function to force render
-  const forceUpdate = () => {
-    setVisualizationType(prev => prev === 'visual' ? 'table' : 'visual');
-    setTimeout(() => {
-      setVisualizationType(prev => prev === 'visual' ? 'table' : 'visual');
-    }, 100);
   };
 
   // Add debug output for the current results

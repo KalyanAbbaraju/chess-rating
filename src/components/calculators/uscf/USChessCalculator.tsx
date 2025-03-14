@@ -2,19 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { USChessCalculatorForm } from './USChessCalculatorForm';
-import { USChessInfo } from './USChessInfo';
 import RatingChangeVisual from '@/components/shared/RatingChangeVisual';
 import RatingResultsTable from '@/components/shared/RatingResultsTable';
 import { UsChessRatingResult, RatingResult } from '@/lib/ratingTypes';
 
 interface USChessCalculatorProps {
-  title?: string;
-  description?: string;
   initialResults?: UsChessRatingResult | null;
   onReset?: () => void;
 }
 
-export function USChessCalculator({ title, description, initialResults, onReset }: USChessCalculatorProps) {
+export function USChessCalculator({ initialResults, onReset }: USChessCalculatorProps) {
   const [results, setResults] = useState<RatingResult | null>(initialResults || null);
   const [visualizationType, setVisualizationType] = useState<'visual' | 'table'>('visual');
   const [error, setError] = useState<string | null>(null);

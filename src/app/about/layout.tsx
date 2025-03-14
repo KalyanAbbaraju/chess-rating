@@ -1,8 +1,16 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About | Chess Companion',
-  description: 'Learn about the Chess Companion app and team',
+  title: 'About | Elo Estimate',
+  description: 'Learn about the Elo Estimate app and team',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  colorScheme: 'light',
 };
 
 export default function AboutLayout({

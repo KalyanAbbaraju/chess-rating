@@ -84,7 +84,7 @@ For more detailed information, consult the official FIDE Handbook.
         console.error('Error loading markdown:', error);
         // Fallback content already set, no need to change
       });
-  }, []);
+  }, [fallbackContent]);
 
   return (
     <div className="prose prose-sm max-w-none text-xs">
@@ -92,14 +92,14 @@ For more detailed information, consult the official FIDE Handbook.
         remarkPlugins={[remarkMath, remarkGfm]}
         rehypePlugins={[rehypeKatex]}
         components={{
-          h1: ({node, ...props}) => <h1 className="text-base font-bold mb-2 mt-0" {...props} />,
-          h2: ({node, ...props}) => <h2 className="text-sm font-bold mb-1 mt-3" {...props} />,
-          h3: ({node, ...props}) => <h3 className="text-xs font-bold mb-1 mt-2" {...props} />,
-          p: ({node, ...props}) => <p className="mb-1 text-xs" {...props} />,
-          ul: ({node, ...props}) => <ul className="mb-2 ml-4" {...props} />,
-          ol: ({node, ...props}) => <ol className="mb-2 ml-4" {...props} />,
-          li: ({node, ...props}) => <li className="mb-0.5 text-xs" {...props} />,
-          a: ({node, ...props}) => <a className="text-blue-600 hover:underline" {...props} />
+          h1: ({...props}) => <h1 className="text-base font-bold mb-2 mt-0" {...props} />,
+          h2: ({...props}) => <h2 className="text-sm font-bold mb-1 mt-3" {...props} />,
+          h3: ({...props}) => <h3 className="text-xs font-bold mb-1 mt-2" {...props} />,
+          p: ({...props}) => <p className="mb-1 text-xs" {...props} />,
+          ul: ({...props}) => <ul className="mb-2 ml-4" {...props} />,
+          ol: ({...props}) => <ol className="mb-2 ml-4" {...props} />,
+          li: ({...props}) => <li className="mb-0.5 text-xs" {...props} />,
+          a: ({...props}) => <a className="text-blue-600 hover:underline" {...props} />
         }}
       >
         {infoContent}

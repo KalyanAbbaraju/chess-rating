@@ -1,4 +1,14 @@
 import Link from 'next/link';
+import type { Viewport } from 'next';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  colorScheme: 'light',
+};
+
 export default function NotFound() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh]">

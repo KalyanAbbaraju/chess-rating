@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, ChevronLeft, Home, Calculator, BarChart2, Info, Mail } from 'lucide-react';
-import { GiChessKnight } from 'react-icons/gi';
+import Image from 'next/image';
 
 // Navigation items with icons directly included
 const navItems = [
   { name: 'Home', href: '/', icon: Home },
   { name: 'US Chess Rating Estimator', href: '/calculators/uscf', icon: Calculator },
   { name: 'FIDE Rating Estimator', href: '/calculators/fide', icon: BarChart2 },
+  { name: 'ECF Rating Estimator', href: '/calculators/ecf', icon: Calculator },
   { name: 'About', href: '/about', icon: Info },
   { name: 'Contact', href: '/contact', icon: Mail },
 ];
@@ -46,10 +47,16 @@ export default function SideNav() {
         } fixed top-0 left-0 h-full w-64 bg-white shadow-sm z-20 transition-transform duration-300 ease-in-out flex flex-col border-r border-gray-200`}
       >
         <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-          <Link href="/" className="flex items-center">
-            <GiChessKnight className="text-blue-600 w-8 h-8" />
-            <span className="ml-2 text-xl font-semibold text-gray-800">Chess Companion</span>
-          </Link>
+          <div className="flex items-center">
+            <Image
+              src="/logo.svg"
+              alt="Logo"
+              width={32}
+              height={32}
+              className="mr-2"
+            />
+            <span className="ml-2 text-xl font-semibold text-gray-800">Elo Estimate</span>
+          </div>
           
           {/* Minimize button */}
           <button 
@@ -87,8 +94,9 @@ export default function SideNav() {
         </nav>
 
         <div className="p-4 border-t border-gray-200 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} Chess Companion</p>
-          <p>All rights reserved.</p>
+          <div className="text-center text-xs text-gray-500 mt-4">
+            <p>© {new Date().getFullYear()} Elo Estimate</p>
+          </div>
         </div>
       </aside>
     </>

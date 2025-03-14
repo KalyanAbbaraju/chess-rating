@@ -39,7 +39,9 @@ const RatingChangeVisual: React.FC<RatingChangeVisualProps> = ({ results }) => {
   // Get performance rating (different property names in each system)
   const performanceRating = results.type === 'uschess' 
     ? results.fidePerformanceRating || 0
-    : results.performanceRating;
+    : results.type === 'fide'
+      ? results.performanceRating
+      : undefined; // For ECF type
 
   // Common variables for both rating systems
   const isPositiveChange = ratingChange > 0;

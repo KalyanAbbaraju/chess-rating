@@ -42,7 +42,7 @@ export async function sendContactEmail(data: EmailData): Promise<void> {
   const mailOptions = {
     from: process.env.EMAIL_FROM || 'akvg20@gmail.com',
     to: 'akvg20@gmail.com',
-    subject: `Chess Companion Contact: ${name}`,
+    subject: `Elo Estimate Contact: ${name}`,
     text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
     html: `
       <h2>New Contact Form Submission</h2>

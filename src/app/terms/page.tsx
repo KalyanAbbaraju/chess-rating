@@ -1,4 +1,10 @@
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service | Elo Estimate',
+  description: 'Read Elo Estimate\'s terms of service to understand the rules and regulations for using our chess rating calculators and other chess tools.'
+};
 
 export default function TermsOfService() {
   return (
@@ -6,27 +12,17 @@ export default function TermsOfService() {
       <h1 className="text-3xl font-bold mb-8 text-gray-800">Terms of Service</h1>
       
       <div className="space-y-8 text-gray-700">
-        <p className="text-lg">
-          Last updated: {new Date().toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})}
+        <p className="text-lg leading-relaxed mb-8">
+          Welcome to Elo Estimate. These terms and conditions outline the rules and regulations for the use of our website.
+          By accessing this website, we assume you accept these terms and conditions in full. Do not continue to use
+          Elo Estimate if you do not accept all of the terms and conditions stated on this page.
         </p>
         
-        <section>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Introduction</h2>
-          <p className="mb-4 leading-relaxed">
-            Welcome to Chess Companion. These terms and conditions outline the rules and regulations for the use of our website.
-            By accessing this website, we assume you accept these terms and conditions in full. Do not continue to use 
-            Chess Companion if you do not accept all of the terms and conditions stated on this page.
-          </p>
-        </section>
-        
-        <section>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Website Use</h2>
-          <p className="mb-4 leading-relaxed">
-            Chess Companion provides chess rating calculators and tools for informational purposes only. The information obtained 
-            from our tools should not be considered official ratings or official advice regarding chess ratings. Official ratings 
-            are determined solely by the respective chess organizations (US Chess Federation, FIDE, etc.).
-          </p>
-        </section>
+        <h2 className="text-2xl font-semibold mt-10 mb-4 text-gray-800 border-b pb-2">Use of Our Services</h2>
+        <p className="text-gray-700 mb-6">
+          Elo Estimate provides chess rating calculators and tools for informational purposes only. The information obtained
+          through our calculators is an estimate and may not reflect official ratings issued by chess organizations.
+        </p>
         
         <section>
           <h2 className="text-2xl font-bold mb-4 text-gray-800">Calculation Accuracy</h2>
@@ -49,24 +45,18 @@ export default function TermsOfService() {
           </ul>
         </section>
         
-        <section>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Intellectual Property</h2>
-          <p className="mb-4 leading-relaxed">
-            The content on Chess Companion, including but not limited to text, graphics, logos, icons, images, and software, 
-            is the property of Chess Companion and is protected by copyright and other intellectual property laws. You may not 
-            reproduce, duplicate, copy, sell, resell, or exploit any portion of this website without express written permission.
-          </p>
-        </section>
+        <h2 className="text-2xl font-semibold mt-10 mb-4 text-gray-800 border-b pb-2">Intellectual Property</h2>
+        <p className="text-gray-700 mb-6">
+          The content on Elo Estimate, including but not limited to text, graphics, logos, icons, images, and software,
+          is the property of Elo Estimate and is protected by copyright and other intellectual property laws. You may not
+          reproduce, distribute, or use our content without express permission.
+        </p>
         
-        <section>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Limitation of Liability</h2>
-          <p className="mb-4 leading-relaxed">
-            Chess Companion and its operators shall not be held liable for any direct, indirect, incidental, consequential, 
-            or special damages arising out of or in any way connected with the use of our website, services, or content. This 
-            includes, but is not limited to, damages for loss of profits, data, or other intangible losses, even if we have been 
-            advised of the possibility of such damages.
-          </p>
-        </section>
+        <h2 className="text-2xl font-semibold mt-10 mb-4 text-gray-800 border-b pb-2">Limitation of Liability</h2>
+        <p className="text-gray-700 mb-6">
+          Elo Estimate and its operators shall not be held liable for any direct, indirect, incidental, consequential,
+          or punitive damages arising from your use of the website or any information it contains.
+        </p>
         
         <section>
           <h2 className="text-2xl font-bold mb-4 text-gray-800">Third-Party Links</h2>

@@ -6,7 +6,7 @@ import { Info, X } from 'lucide-react';
 interface DisclaimerModalProps {
   shortText: string;
   title: string;
-  organization: 'FIDE' | 'USCF';
+  organization: 'FIDE' | 'USCF' | 'ECF';
   className?: string;
 }
 

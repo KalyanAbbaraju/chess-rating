@@ -8,10 +8,10 @@ export const viewport: Viewport = {
   colorScheme: 'light',
 };
 
-export default function CalculatorsLayout({
+export default function TermsLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return children;
 } 

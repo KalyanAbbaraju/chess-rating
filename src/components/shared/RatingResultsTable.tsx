@@ -30,12 +30,18 @@ const RatingResultsTable: React.FC<RatingResultsTableProps> = ({ results }) => {
         ...(results.ratingWithoutFloor && results.ratingWithoutFloor !== results.newRating ? 
             [{ label: 'Rating Before Floor', value: results.ratingWithoutFloor }] : [])
       ]
-    : [ // FIDE specific data
-        { label: 'Performance Rating', value: results.performanceRating },
-        { label: 'Classification', value: results.classification },
-        { label: 'Dynamic K-Factor', value: results.dynamicKFactor },
-        { label: 'Provisional', value: results.isProvisional ? 'Yes' : 'No' }
-      ];
+    : results.type === 'fide'
+      ? [ // FIDE specific data
+          { label: 'Performance Rating', value: results.performanceRating },
+          { label: 'Classification', value: results.classification },
+          { label: 'Dynamic K-Factor', value: results.dynamicKFactor },
+          { label: 'Provisional', value: results.isProvisional ? 'Yes' : 'No' }
+        ]
+      : [ // ECF specific data
+          { label: 'Elo Equivalent', value: results.eloEquivalent },
+          { label: 'Opponent Elo Equivalent', value: results.opponentEloEquivalent },
+          { label: 'Provisional', value: results.isProvisional ? 'Yes' : 'No' }
+        ];
   
   const allData = [...commonData, ...systemSpecificData.filter(item => item.value !== undefined)];
 
@@ -45,7 +51,7 @@ const RatingResultsTable: React.FC<RatingResultsTableProps> = ({ results }) => {
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-medium text-gray-700">Detailed Results</h3>
           <div className="px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-            {results.type === 'uschess' ? 'US Chess' : 'FIDE'}
+            {results.type === 'uschess' ? 'US Chess' : results.type === 'fide' ? 'FIDE' : 'ECF'}
           </div>
         </div>
       </div>

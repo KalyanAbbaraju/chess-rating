@@ -4,11 +4,11 @@ export default function Footer() {
   return (
     <footer className="bg-gray-100 border-t border-gray-200 py-6 md:py-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-semibold text-lg mb-3 md:mb-4">Chess Companion</h3>
-            <p className="text-gray-600 text-sm mb-4">
-              Tools and resources for chess players of all levels.
+            <h3 className="font-semibold text-lg mb-3 md:mb-4">Elo Estimate</h3>
+            <p className="text-gray-600 mb-4">
+              Free chess rating calculators for FIDE, USCF, and ECF ratings.
             </p>
           </div>
           
@@ -55,8 +55,8 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="border-t border-gray-200 mt-6 md:mt-8 pt-4 md:pt-6 text-center text-gray-500 text-xs md:text-sm">
-          <p>© {new Date().getFullYear()} Chess Companion. All rights reserved.</p>
+        <div className="border-t border-gray-200 pt-6 mt-8 flex flex-col md:flex-row justify-between items-center">
+          <p>© {new Date().getFullYear()} Elo Estimate. All rights reserved.</p>
         </div>
       </div>
     </footer>
