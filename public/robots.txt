@@ -1,4 +1,29 @@
+# *
 User-agent: *
 Allow: /
 
-Sitemap: https://eloestimate.com/sitemap.xml 
+# GPTBot
+User-agent: GPTBot
+Disallow: /
+
+# CCBot
+User-agent: CCBot
+Disallow: /
+
+# ChatGPT-User
+User-agent: ChatGPT-User
+Disallow: /
+
+# Google-Extended
+User-agent: Google-Extended
+Allow: /
+
+# anthropic-ai
+User-agent: anthropic-ai
+Disallow: /
+
+# Host
+Host: https://eloestimate.com
+
+# Sitemaps
+Sitemap: https://eloestimate.com/sitemap.xml
